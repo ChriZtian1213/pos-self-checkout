@@ -1,15 +1,19 @@
 import {OrderItem} from "~/components/OrderItem";
 import {useNavigate} from "react-router";
+import {useCallback, useState} from "react";
+import {CustomerFunctions} from "~/services/CustomerFunctions";
+import Popup from "~/components/Popup";
 
 
 export function meta() {
     return [
-        { title: "Order Page" },
-        { name: "description", content: "Test order page" },
+        { title: "Order" },
     ];
 }
 
 export default function Order() {
+    const [popupMessage, setPopupMessage] = useState<string | null>(null);
+    const customerFunctions = new CustomerFunctions(setPopupMessage);
     const items = [
         {name: "Apple", price: 1.25, taxable: "F"},
         {name: "Banana", price: 0.50, taxable: "F"},
@@ -20,8 +24,10 @@ export default function Order() {
         navigate("/");
     }
     const handleProduceNoBarcode = () => {
-        // TODO: create /produce route
-        // navigate("/");
+        navigate("/produce");
+    }
+    const handleCallCashier = () => {
+        customerFunctions.callCashier()
     }
 
     const subtotal = items.reduce((acc, item) => acc+item.price, 0);
@@ -131,7 +137,10 @@ export default function Order() {
 
                     {/* Category Buttons */}
                     <div style={{ display: "flex", gap: "0.5rem" }}>
-                        <button style={{ flex: 1, padding: "1rem" }}>Produce /<br/> No Barcode </button>
+                        <button
+                            style={{ flex: 1, padding: "1rem" }}
+                            onClick={handleProduceNoBarcode}
+                                >Produce /<br/> No Barcode </button>
                         <button style={{ flex: 1, padding: "1rem" }}>Salt/Ice</button>
                         <button style={{ flex: 1, padding: "1rem" }}>Bakery</button>
                     </div>
@@ -159,8 +168,17 @@ export default function Order() {
                 </button>
                 <button
                     style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white", borderRight: "1px transparent" }}
+                    onClick={handleCallCashier}
                 >
                     Call Cashier
+                    {/*
+                    {popupMessage && (
+                        <Popup
+                            message={popupMessage}
+                            onClose={() => setPopupMessage(null)}
+                        />
+                    )}
+                    */}
                 </button>
                 <div
                     style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "#6f7594", color: "white", borderRight: "1px transparent" }}

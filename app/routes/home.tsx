@@ -3,6 +3,8 @@ import {useNavigate} from "react-router";
 import React, {useState} from "react";
 import Popup from '../components/Popup';
 import Order from "./order";
+import {CashierFunctions} from "~/services/CashierFunctions";
+import {text} from "~/i18n/text";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -16,29 +18,11 @@ export default function Home() {
     const [popupMessage, setPopupMessage] = useState<string | null>(null);
     const isPopupOpen = popupMessage !== null;
     const navigate = useNavigate();
-    const text = {
-        en: {
-            welcomeMain: "Scan first item",
-            welcomeSub: 'or touch screen to start',
-            useBags: "Use my bags",
-            callCashier: "Call cashier",
-            language: "Español",
-            bagMessage: "Please place your bags in the weighing area",
-            cashierMessage: "Help is on the way!",
-        },
-        es: {
-            welcomeMain: "Escanea el primer artículo",
-            welcomeSub: 'o toca la pantalla para empezar',
-            useBags: "Usa mis maletas",
-            callCashier: "Llama al cajero",
-            language: "Inglés",
-            bagMessage: "Por favor, coloca tus maletas en la zona de pesaje",
-            cashierMessage: "¡Ayuda viene en camino!",
-        },
-    };
+    const cashierFunctions = new CashierFunctions(setPopupMessage);
 
-    const handleUseBags = () => setPopupMessage(text[language].bagMessage);
-    const handleCallCashier = () => setPopupMessage(text[language].cashierMessage);
+    const handleUseBags = () => setPopupMessage(text[language].bagsMessage);
+    const handleCallCashier = () =>
+        cashierFunctions.callCashier();
     const handleLanguage = () => setLanguage(language === "en" ? "es" : "en");
 
     const handleStart = () => {
