@@ -26,7 +26,7 @@ export const ProduceGrid: React.FC<ProduceGridProps> = ({produceItems, language,
                 >
                     <span>{item.plu}</span>
                     <img
-                        src="https://via.placeholder.com/50"
+                        src={`/produceImages/${item.image}`}
                         alt={item.name[language]}
                         style={{ width: "50px", height: "50px" }}
                     />

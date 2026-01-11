@@ -3,6 +3,7 @@ export interface ProduceItem{
     plu: string
     price: number
     taxable: string
+    image?: string
 }
 
 export const produce: Record<string, ProduceItem> = {
@@ -10,56 +11,64 @@ export const produce: Record<string, ProduceItem> = {
         name: {en: "Apple", es: "Manzana"},
         plu: "4017",
         price: 1.25,
-        taxable: "F"
+        taxable: "F",
+        image: "apple.jpg"
     },
     banana: {
         name: {en: "Banana", es: "Platano"},
         plu: "4011",
         price: .75,
-        taxable: "F"
+        taxable: "F",
+        image: "banana.jpg"
     },
     grapes: {
         name: {en: "Grapes", es: "Uvas"},
         plu: "4022",
         price: 1.50,
-        taxable: "F"
+        taxable: "F",
+        image: "grapes.jpg"
     },
-    oranges: {
+    orange: {
         name: {en: "Orange", es: "Naranja"},
         plu: "4013",
         price: .75,
-        taxable: "F"
+        taxable: "F",
+        image: "orange.jpg"
     },
     tomato: {
         name: {en: "Tomato", es: "Tomate"},
         plu: "4087",
         price: .80,
-        taxable: "F"
+        taxable: "F",
+        image: "tomato.jpg"
     },
-    limes: {
+    lime: {
         name: {en: "Lime", es: "Lima"},
         plu: "4088",
         price: .75,
-        taxable: "F"
+        taxable: "F",
+        image: "limes.jpg"
     },
     lettuce: {
         name: {en: "Lettuce", es: "Lechuga"},
         plu: "4640",
         price: 1.00,
-        taxable: "F"
+        taxable: "F",
+        image: "lettuce.jpg"
     },
     pineapple: {
-        name: {en: "Pineapple", es: "Piña"},
+        name: {en: "Pineapple", es: "jpg"},
         plu: "4433",
         price: 1.00,
-        taxable: "F"
+        taxable: "F",
+        image: "pineapple.jpg"
     },
     addMore: {
         name: {en: "enName", es: "esName"},
         plu: "0",
         price: 0,
-        taxable: "Taxable"
-
+        taxable: "Taxable",
+        image: "addMore.jpg"
     }
 
 }

@@ -9,6 +9,7 @@ export const Numpad: React.FC<NumpadProps> = ({pluInput, setPluInput}) => {
     const handleKey = (key: string) => {
         if (key === "⌫") setPluInput(pluInput.slice(0, -1));
         else if (key === "Enter") return;
+        else if (key === "Clear") setPluInput(pluInput.slice(0, 0));
         else setPluInput(pluInput + key);
     };
     return (
@@ -35,15 +36,27 @@ export const Numpad: React.FC<NumpadProps> = ({pluInput, setPluInput}) => {
                     flex: 1,
                 }}
             >
-                {["7","8","9","4","5","6","1","2","3","⌫","0","Enter"].map(key => (
+                {["7","8","9","4","5","6","1","2","3","⌫","0","Clear"].map(key => (
                     <button
                         key={key}
-                        style={{ fontSize: "1.5rem", cursor: "pointer" }}
+                        style={{ fontSize: "1.5rem", cursor: "pointer", minHeight: "10vh",  }}
                         onClick={() => handleKey(key)}
                     >
                         {key}
                     </button>
                 ))}
+            </div>
+            <div
+                style={{
+                    flex: 1
+                }}
+            >
+                <button
+                    key="enter"
+                    style={{fontSize: "1.5rem", cursor: "pointer", minHeight: "8vh", minWidth: "30vh"}}
+                >
+                    Enter
+                </button>
             </div>
         </div>
     );
