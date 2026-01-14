@@ -19,10 +19,6 @@ export default function ProduceNoBarcode(){
     const [page, setPage] = useState(0);
     const [pluInput, setPluInput] = useState("");
 
-    const [nameSearchActive, setNameSearchActive] = useState(false);
-    const [nameInput, setNameInput] = useState("");
-    const [namePage, setNamePage] = useState(0);
-
 
     useEffect(() => {
         setPage(0);
@@ -83,7 +79,11 @@ export default function ProduceNoBarcode(){
                         page={page} producePerPage={producePerPage} totalItems={filteredProduce.length}
                     />
                     {!isPlu ? (
-                        <QwertyKeyboard onKeyPress={setNameInput}/>
+                        <div style={{
+                            display: "flex", justifyContent: "center", paddingBottom: "5rem", alignItems: "center"
+                        }}>
+                            <QwertyKeyboard nameInput={currentInput} setNameInput={setCurrentInput} />
+                        </div>
                     ) : (
                         <></>
                     )}
@@ -108,7 +108,11 @@ export default function ProduceNoBarcode(){
                 >
                     Cancel</button>
                 <button
-                    onClick={() => setIsPlu(!isPlu)}
+                    onClick={() => {
+                        setIsPlu(!isPlu);
+                        setPage(0);
+                        setCurrentInput("");
+                    }}
                     style={{
                         flex: 1
                     }}
