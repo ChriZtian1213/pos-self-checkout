@@ -3,6 +3,9 @@ import {useNavigate} from "react-router";
 import {useCallback, useState} from "react";
 import {CustomerFunctions} from "~/services/CustomerFunctions";
 import Popup from "~/components/Popup";
+import {useLanguage} from "~/state/LanguageContext";
+import {text} from "~/i18n/text";
+import {produce, type ProduceItem} from "~/data/produce";
 
 
 export function meta() {
@@ -12,12 +15,10 @@ export function meta() {
 }
 
 export default function Order() {
+    const {language} = useLanguage();
     const [popupMessage, setPopupMessage] = useState<string | null>(null);
     const customerFunctions = new CustomerFunctions(setPopupMessage);
-    const items = [
-        {name: "Apple", price: 1.25, taxable: "F"},
-        {name: "Banana", price: 0.50, taxable: "F"},
-    ];
+    const items = Object.values(produce);
 
     const navigate = useNavigate();
     const handleGoBack = () => {
@@ -54,8 +55,8 @@ export default function Order() {
                         flexDirection: "column",
                     }}
                 >
-                    <h3 style={{ textAlign: "center" }}>Order Number: 1</h3>
-                        {/* Example items */}
+                    <h3 style={{ textAlign: "center" }}>
+                        {text[language].order}</h3>
                     <div
                         style={{
                             flex: 1,
@@ -70,7 +71,7 @@ export default function Order() {
                             {items.map((item, index) => (
                                 <OrderItem
                                     key={index}
-                                    name={item.name}
+                                    name={item.name[language]}
                                     price={`$${item.price.toFixed(2)}`}
                                     taxable={item.taxable}
                                 />
@@ -87,7 +88,7 @@ export default function Order() {
                             borderTop: "1px solid gray",
                         }}
                     >
-                        <div>Subtotal</div>
+                        <div>{text[language].subtotal}</div>
                         <div>${subtotal.toFixed(2)}</div>
                     </div>
                 </div>
@@ -140,9 +141,9 @@ export default function Order() {
                         <button
                             style={{ flex: 1, padding: "1rem" }}
                             onClick={handleProduceNoBarcode}
-                                >Produce /<br/> No Barcode </button>
-                        <button style={{ flex: 1, padding: "1rem" }}>Salt/Ice</button>
-                        <button style={{ flex: 1, padding: "1rem" }}>Bakery</button>
+                                >{text[language].produceNoBarcode}</button>
+                        <button style={{ flex: 1, padding: "1rem" }}>{text[language].saltIce}</button>
+                        <button style={{ flex: 1, padding: "1rem" }}>{text[language].bakery}</button>
                     </div>
                 </div>
             </div>
@@ -159,18 +160,18 @@ export default function Order() {
                     style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white", borderRight: "1px solid black" }}
                     onClick={handleGoBack}
                 >
-                    Back
+                    {text[language].back}
                 </button>
                 <button
                     style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white" , borderRight: "1px solid black"}}
                 >
-                    Cancel Items
+                    {text[language].cancelItems}
                 </button>
                 <button
                     style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white", borderRight: "1px transparent" }}
                     onClick={handleCallCashier}
                 >
-                    Call Cashier
+                    {text[language].callCashier}
                     {/*
                     {popupMessage && (
                         <Popup
@@ -188,7 +189,7 @@ export default function Order() {
                 <button
                     style={{ flex: 2, border: "none", cursor: "pointer", backgroundColor: "#008b24", color: "white", fontSize: "1rem", borderRight: "1px solid white" }}
                 >
-                    Pay Now
+                    {text[language].payNow}
                 </button>
             </div>
         </div>

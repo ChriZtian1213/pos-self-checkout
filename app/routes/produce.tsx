@@ -4,6 +4,8 @@ import {useNavigate} from "react-router";
 import {ProduceGrid} from "~/components/ProduceGrid";
 import {Numpad} from "~/components/Numpad";
 import {QwertyKeyboard} from "~/components/Keyboard";
+import {useLanguage} from "~/state/LanguageContext";
+import {text} from "~/i18n/text";
 
 export function meta(){
     return [
@@ -12,8 +14,8 @@ export function meta(){
 }
 
 export default function ProduceNoBarcode(){
+    const {language} = useLanguage();
     const navigate=useNavigate();
-    const [language, setLanguage] = useState<"en"|"es">("en");
     const [isPlu, setIsPlu] = useState(true);
     const [currentInput, setCurrentInput] = useState("");
     const [page, setPage] = useState(0);
@@ -106,7 +108,7 @@ export default function ProduceNoBarcode(){
                     style={{flex: 1}}
                     onClick={handleCancel}
                 >
-                    Cancel</button>
+                    {text[language].back}</button>
                 <button
                     onClick={() => {
                         setIsPlu(!isPlu);
@@ -117,7 +119,7 @@ export default function ProduceNoBarcode(){
                         flex: 1
                     }}
                 >
-                    {isPlu ? "Name Search" : "PLU Search"}</button>
+                    {isPlu ? text[language].nameSearch : text[language].pluSearch}</button>
                 <div style={{flex: 1, textAlign: "center", alignItems: "center"}}>0.00 lbs</div>
             </div>
         </div>

@@ -1,8 +1,10 @@
+import type {LangText} from "~/state/LanguageContext";
+
 export interface ProduceItem{
-    name: {en: string; es: string};
+    name: LangText;
     plu: string
     price: number
-    taxable: string
+    taxable: "T" | "F" | "TF" | ""
     image?: string
 }
 
@@ -57,7 +59,7 @@ export const produce: Record<string, ProduceItem> = {
         image: "lettuce.jpg"
     },
     pineapple: {
-        name: {en: "Pineapple", es: "jpg"},
+        name: {en: "Pineapple", es: "Piña"},
         plu: "4433",
         price: 1.00,
         taxable: "F",
@@ -67,8 +69,15 @@ export const produce: Record<string, ProduceItem> = {
         name: {en: "enName", es: "esName"},
         plu: "0",
         price: 0,
-        taxable: "Taxable",
+        taxable: "T",
         image: "addMore.jpg"
+    },
+    avocado: {
+        name: {en: "Avocado", es: "Aguacate"},
+        plu: "4046",
+        price: .50,
+        taxable: "F",
+        image: "avocado.jpg"
     }
 
 }

@@ -1,9 +1,11 @@
 import React from "react";
+import {type Language, useLanguage} from "~/state/LanguageContext";
+import {text} from "~/i18n/text";
 import type {ProduceItem} from "~/data/produce";
 
 interface ProduceGridProps {
     produceItems: ProduceItem[];
-    language: "en" | "es";
+    language: Language
     onClick?: (item: ProduceItem) => void;
     page: number;
     producePerPage: number;
@@ -13,9 +15,11 @@ interface ProduceGridProps {
 }
 
 export const ProduceGrid: React.FC<ProduceGridProps> = ({
-    produceItems, language, onClick,
+    produceItems, onClick,
     page, producePerPage, totalItems, onNext, onBack
     }) => {
+    const {language} = useLanguage();
+
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem", flex: 2 }}>
             <div
@@ -57,14 +61,14 @@ export const ProduceGrid: React.FC<ProduceGridProps> = ({
                     onClick={onBack}
                     disabled={page === 0}
                 >
-                    Back
+                    {text[language].back}
                 </button>
                 <button
                     style={{ flex: 1 }}
                     onClick={onNext}
                     disabled={(page + 1) * producePerPage >= totalItems}
                 >
-                    Next
+                    {text[language].next}
                 </button>
             </div>
         </div>

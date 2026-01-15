@@ -1,4 +1,6 @@
 import React from "react";
+import {text} from "~/i18n/text";
+import {useLanguage} from "~/state/LanguageContext";
 
 interface NumpadProps {
     pluInput: string;
@@ -6,12 +8,16 @@ interface NumpadProps {
 }
 
 export const Numpad: React.FC<NumpadProps> = ({pluInput, setPluInput}) => {
+    const {language} = useLanguage();
     const handleKey = (key: string) => {
         if (key === "⌫") setPluInput(pluInput.slice(0, -1));
         else if (key === "Enter") return;
         else if (key === "Clear") setPluInput(pluInput.slice(0, 0));
         else setPluInput(pluInput + key);
     };
+
+    const keys = ["7","8","9","4","5","6","1","2","3","⌫","0", text[language].clear];
+
     return (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.5rem", padding: "1rem" }}>
             <div
@@ -36,7 +42,7 @@ export const Numpad: React.FC<NumpadProps> = ({pluInput, setPluInput}) => {
                     flex: 1,
                 }}
             >
-                {["7","8","9","4","5","6","1","2","3","⌫","0","Clear"].map(key => (
+                {keys.map(key => (
                     <button
                         key={key}
                         style={{ fontSize: "1.5rem", cursor: "pointer", minHeight: "10vh",  }}
@@ -55,7 +61,7 @@ export const Numpad: React.FC<NumpadProps> = ({pluInput, setPluInput}) => {
                     key="enter"
                     style={{fontSize: "1.5rem", cursor: "pointer", minHeight: "8vh", minWidth: "30vh"}}
                 >
-                    Enter
+                    {text[language].enter}
                 </button>
             </div>
         </div>

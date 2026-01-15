@@ -10,6 +10,10 @@ export class CustomerFunctions {
         this.setPopup("Cashier is on the way");
     }
 
+    switchLanguage(){
+
+    }
+
 }
 
 export class CashierFunctions extends CustomerFunctions {

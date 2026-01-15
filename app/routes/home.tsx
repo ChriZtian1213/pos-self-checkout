@@ -1,10 +1,12 @@
 import type { Route } from "./+types/home";
-import {useNavigate} from "react-router";
+import {useLocation, useNavigate} from "react-router";
 import React, {useState} from "react";
 import Popup from '../components/Popup';
 import Order from "./order";
 import {CashierFunctions} from "~/services/CashierFunctions";
 import {text} from "~/i18n/text";
+import {LanguageButton} from "~/components/LanguageButton";
+import {useLanguage} from "~/state/LanguageContext";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -14,7 +16,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-    const [language, setLanguage] = useState<"en" | "es">("en");
+    const {language} = useLanguage();
     const [popupMessage, setPopupMessage] = useState<string | null>(null);
     const isPopupOpen = popupMessage !== null;
     const navigate = useNavigate();
@@ -23,7 +25,6 @@ export default function Home() {
     const handleUseBags = () => setPopupMessage(text[language].bagsMessage);
     const handleCallCashier = () =>
         cashierFunctions.callCashier();
-    const handleLanguage = () => setLanguage(language === "en" ? "es" : "en");
 
     const handleStart = () => {
         if (isPopupOpen) return;
@@ -100,20 +101,7 @@ export default function Home() {
                     {text[language].callCashier}
                 </button>
 
-                <button
-                    style={{
-                        flex: 1,
-                        fontSize: "1rem",
-                        border: "none",
-                        borderRight: "1px solid white",
-                        cursor: "pointer",
-                        backgroundColor: "#0071ff",
-                        color: "white",
-                    }}
-                    onClick={handleLanguage}
-                >
-                    {text[language].language}
-                </button>
+                <LanguageButton />
             </div>
 
 
