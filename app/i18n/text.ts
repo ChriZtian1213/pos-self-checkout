@@ -30,7 +30,7 @@ export const text: Record<Language, UIText> = {
         welcomeMain: "Scan first item",
         welcomeSub: 'or touch screen to start',
         useBags: "Use my bags",
-        callCashier: "Call cashier",
+        callCashier: "Call Cashier",
         language: "Español",
         bagsMessage: "Please place your bags in the weighing area",
         cashierMessage: "Help is on the way!",
@@ -67,7 +67,7 @@ export const text: Record<Language, UIText> = {
         produceNoBarcode: "Producir /\nSin código de barras",
         saltIce: "Sal/Hielo",
         bakery: "Panadería",
-        scanItem: "Por favor escanee el articulo",
+        scanItem: "Por favor de ecanar  articulo",
         order: "Orden ",
 
         nameSearch: "Buscar con nombre",

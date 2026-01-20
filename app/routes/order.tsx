@@ -1,3 +1,4 @@
+import {ManageOrder, type OrderItemData} from "~/services/ManageOrder";
 import {OrderItem} from "~/components/OrderItem";
 import {useNavigate} from "react-router";
 import {useCallback, useState} from "react";
@@ -6,6 +7,8 @@ import Popup from "~/components/Popup";
 import {useLanguage} from "~/state/LanguageContext";
 import {text} from "~/i18n/text";
 import {produce, type ProduceItem} from "~/data/produce";
+import {useOrder} from "~/state/OrderContext";
+
 
 
 export function meta() {
@@ -17,10 +20,12 @@ export function meta() {
 export default function Order() {
     const {language} = useLanguage();
     const [popupMessage, setPopupMessage] = useState<string | null>(null);
-    const customerFunctions = new CustomerFunctions(setPopupMessage);
+    const customerFunctions = new CustomerFunctions(setPopupMessage, language);
+
     const items = Object.values(produce);
 
     const navigate = useNavigate();
+
     const handleGoBack = () => {
         navigate("/");
     }
@@ -29,6 +34,13 @@ export default function Order() {
     }
     const handleCallCashier = () => {
         customerFunctions.callCashier()
+    }
+
+
+
+    const handlePayNow = () => {
+        if (popupMessage !== null) return;
+        navigate("/payNow");
     }
 
     const subtotal = items.reduce((acc, item) => acc+item.price, 0);
@@ -115,7 +127,7 @@ export default function Order() {
                             fontSize: "1.5rem"
                         }}
                     >
-                        Please Scan Item
+                        {text[language].scanItem}
                     </div>
                     {/* Product Image */}
                     <div
@@ -164,6 +176,7 @@ export default function Order() {
                 </button>
                 <button
                     style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white" , borderRight: "1px solid black"}}
+                    onClick={() => customerFunctions.callCashier()}
                 >
                     {text[language].cancelItems}
                 </button>
@@ -172,14 +185,6 @@ export default function Order() {
                     onClick={handleCallCashier}
                 >
                     {text[language].callCashier}
-                    {/*
-                    {popupMessage && (
-                        <Popup
-                            message={popupMessage}
-                            onClose={() => setPopupMessage(null)}
-                        />
-                    )}
-                    */}
                 </button>
                 <div
                     style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "#6f7594", color: "white", borderRight: "1px transparent" }}
@@ -192,6 +197,7 @@ export default function Order() {
                     {text[language].payNow}
                 </button>
             </div>
+            {popupMessage && <Popup message={popupMessage} onClose={() => setPopupMessage(null)} />}
         </div>
     );
 }

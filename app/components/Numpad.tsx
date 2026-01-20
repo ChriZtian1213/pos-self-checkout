@@ -3,17 +3,20 @@ import {text} from "~/i18n/text";
 import {useLanguage} from "~/state/LanguageContext";
 
 interface NumpadProps {
-    pluInput: string;
-    setPluInput: (plu: string) => void;
+    input: string;
+    setInput: (plu: string) => void;
+    onEnter?: () => void;
 }
 
-export const Numpad: React.FC<NumpadProps> = ({pluInput, setPluInput}) => {
+export const Numpad: React.FC<NumpadProps> = ({input, setInput, onEnter}) => {
     const {language} = useLanguage();
     const handleKey = (key: string) => {
-        if (key === "⌫") setPluInput(pluInput.slice(0, -1));
-        else if (key === "Enter") return;
-        else if (key === "Clear") setPluInput(pluInput.slice(0, 0));
-        else setPluInput(pluInput + key);
+        if (key === "⌫") setInput(input.slice(0, -1));
+        else if (key === text[language].enter){
+            onEnter?.();
+        }
+        else if (key === text[language].clear) setInput(input.slice(0, 0));
+        else setInput(input + key);
     };
 
     const keys = ["7","8","9","4","5","6","1","2","3","⌫","0", text[language].clear];
@@ -31,7 +34,7 @@ export const Numpad: React.FC<NumpadProps> = ({pluInput, setPluInput}) => {
                     backgroundColor: "#f8f8f8",
                 }}
             >
-                {pluInput}
+                {input}
             </div>
             <div
                 style={{
@@ -60,6 +63,7 @@ export const Numpad: React.FC<NumpadProps> = ({pluInput, setPluInput}) => {
                 <button
                     key="enter"
                     style={{fontSize: "1.5rem", cursor: "pointer", minHeight: "8vh", minWidth: "30vh"}}
+                    onClick={() => onEnter?.()}
                 >
                     {text[language].enter}
                 </button>

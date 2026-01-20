@@ -1,9 +1,10 @@
 
-interface OrderItemData {
+export interface OrderItemData {
+    plu: string;
     name: string;
-    price: string;
-    taxable: string;
-    quantity?: number;
+    unitPrice: number;
+    quantity: number;
+    taxable: "T" | "F" | "TF" | ""
 }
 
 export class ManageOrder {
@@ -18,21 +19,31 @@ export class ManageOrder {
     }
 
 
-    addItem(item: OrderItemData) {
-        this.items.push(item);
+    addItem(item: Omit<OrderItemData, "quantity">, quantity: number = 1) {
+        const existing = this.items.find(i => i.plu === item.plu);
+        if (existing) {
+            existing.quantity += quantity;
+        } else {
+            this.items.push({...item, quantity})
+        }
     }
 
-    removeItem(index: number) {
-        this.items.splice(index, 1);
+    decrementItem(plu: string) {
+        const item = this.items.find(i => i.plu === plu);
+        if (item) {
+            item.quantity -= 1;
+            if (item.quantity <= 0) this.removeItem(plu);
+        }
     }
 
-    updateItem(index: number, updatedItem: Partial<OrderItemData>) {
-        this.items[index] = {...this.items[index], ...updatedItem};
+    removeItem(plu: string) {
+        this.items = this.items.filter(i => i.plu !== plu);
     }
+
 
     getSubtotal() {
         return this.items.reduce(
-            (acc, item) => acc + parseFloat(item.price) * (item.quantity || 1), 0);
+            (acc, item) => acc + item.unitPrice * item.quantity, 0);
     }
 
 }

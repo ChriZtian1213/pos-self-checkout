@@ -1,24 +1,24 @@
-import React from "react";
-import {type Language, useLanguage} from "~/state/LanguageContext";
+import React, {useState} from "react";
+import {useLanguage} from "~/state/LanguageContext";
 import {text} from "~/i18n/text";
 import type {ProduceItem} from "~/data/produce";
 
+const PRODUCE_PER_PAGE = 8;
+
 interface ProduceGridProps {
     produceItems: ProduceItem[];
-    language: Language
     onClick?: (item: ProduceItem) => void;
-    page: number;
-    producePerPage: number;
-    totalItems: number;
-    onNext: () => void;
-    onBack: () => void;
 }
 
 export const ProduceGrid: React.FC<ProduceGridProps> = ({
-    produceItems, onClick,
-    page, producePerPage, totalItems, onNext, onBack
-    }) => {
+    produceItems, onClick }) => {
     const {language} = useLanguage();
+    const [page, setPage] = useState(0);
+
+    const pageItems = produceItems.slice(
+        page * PRODUCE_PER_PAGE,
+        (page + 1) * PRODUCE_PER_PAGE
+    );
 
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem", flex: 2 }}>
@@ -29,7 +29,7 @@ export const ProduceGrid: React.FC<ProduceGridProps> = ({
                     gap: "0.5rem",
                 }}
             >
-                {produceItems.map((item) => (
+                {pageItems.map((item) => (
                     <button
                         key={item.plu}
                         style={{
@@ -58,15 +58,15 @@ export const ProduceGrid: React.FC<ProduceGridProps> = ({
             <div style={{ display: "flex", gap: "0.5rem", minHeight: "3rem" }}>
                 <button
                     style={{ flex: 1 }}
-                    onClick={onBack}
+                    onClick={() => setPage(p => p - 1)}
                     disabled={page === 0}
                 >
                     {text[language].back}
                 </button>
                 <button
                     style={{ flex: 1 }}
-                    onClick={onNext}
-                    disabled={(page + 1) * producePerPage >= totalItems}
+                    onClick={() => setPage(p => p + 1)}
+                    disabled={(page + 1) * PRODUCE_PER_PAGE >= produceItems.length}
                 >
                     {text[language].next}
                 </button>

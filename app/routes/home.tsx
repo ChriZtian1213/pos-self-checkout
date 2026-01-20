@@ -2,8 +2,8 @@ import type { Route } from "./+types/home";
 import {useLocation, useNavigate} from "react-router";
 import React, {useState} from "react";
 import Popup from '../components/Popup';
-import Order from "./order";
 import {CashierFunctions} from "~/services/CashierFunctions";
+import {CustomerFunctions} from "~/services/CustomerFunctions";
 import {text} from "~/i18n/text";
 import {LanguageButton} from "~/components/LanguageButton";
 import {useLanguage} from "~/state/LanguageContext";
@@ -20,11 +20,12 @@ export default function Home() {
     const [popupMessage, setPopupMessage] = useState<string | null>(null);
     const isPopupOpen = popupMessage !== null;
     const navigate = useNavigate();
-    const cashierFunctions = new CashierFunctions(setPopupMessage);
+    const customerFunctions = new CustomerFunctions(setPopupMessage, language)
 
-    const handleUseBags = () => setPopupMessage(text[language].bagsMessage);
+    const handleUseBags = () =>
+        customerFunctions.useBags()
     const handleCallCashier = () =>
-        cashierFunctions.callCashier();
+        customerFunctions.callCashier();
 
     const handleStart = () => {
         if (isPopupOpen) return;
@@ -100,11 +101,8 @@ export default function Home() {
                 >
                     {text[language].callCashier}
                 </button>
-
                 <LanguageButton />
             </div>
-
-
             {popupMessage && <Popup message={popupMessage} onClose={() => setPopupMessage(null)} />}
         </div>
     );

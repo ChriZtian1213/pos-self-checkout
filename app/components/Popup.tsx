@@ -28,7 +28,10 @@ const Popup: React.FC<PopupProps> = ({message, onClose}) => {
         >
             {/* Popup Content*/}
             <div
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                }}
                 style={{
                     backgroundColor: "#222",
                     padding: "2rem",
