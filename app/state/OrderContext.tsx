@@ -7,6 +7,7 @@ interface OrderContextValue {
     items: ReturnType<ManageOrder["getItems"]>;
     addProduce: (item: ProduceItem, quantity: number) => void;
     removeItem: (plu: string) => void;
+    decrementItem: (plu: string) => void;
     subtotal: number;
 }
 
@@ -15,6 +16,10 @@ const OrderContext = createContext<OrderContextValue | null>(null);
 export function OrderProvider({ children }: {children: React.ReactNode}) {
     const order = useRef(new ManageOrder()).current;
     const [, forceUpdate] = useState(0);
+    const decrementItem = (plu: string) => {
+        order.decrementItem(plu);
+        sync();
+    }
 
     const sync = () => forceUpdate(v => v+1);
 
@@ -41,6 +46,7 @@ export function OrderProvider({ children }: {children: React.ReactNode}) {
             items: order.getItems(),
             addProduce,
             removeItem,
+            decrementItem,
             subtotal: order.getSubtotal(),
         }}>
             {children}

@@ -4,11 +4,15 @@ interface OrderItemProps {
     name: string;
     price: string;
     taxable: string;
+    onSelect?: () => void;
 }
 
-export const OrderItem: React.FC<OrderItemProps> = ({ name, price, taxable }) => {
+export const OrderItem: React.FC<OrderItemProps> = ({ name, price, taxable, onSelect }) => {
     return (
         <div
+            onClick={onSelect}
+            role={onSelect ? "button" : undefined}
+            tabIndex={onSelect ? 0 : -1}
             style={{
                 display: "flex",
                 justifyContent: "space-between",

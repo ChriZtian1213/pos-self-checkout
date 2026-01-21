@@ -39,6 +39,7 @@ export default function ProduceNoBarcode(){
     const handleProduceSelect = (item: ProduceItem) => {
         setSelectedProduce(item);
         setQuantityInput("");
+        setIsPlu(true);
     }
 
     const handleConfirmQuantity = () => {
@@ -57,6 +58,7 @@ export default function ProduceNoBarcode(){
         setSelectedProduce(null);
         setQuantityInput("");
         setCurrentInput("");
+        navigate("/order")
     };
 
     const handleCancel = () => {

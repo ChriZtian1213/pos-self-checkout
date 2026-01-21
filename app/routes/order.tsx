@@ -20,9 +20,10 @@ export function meta() {
 export default function Order() {
     const {language} = useLanguage();
     const [popupMessage, setPopupMessage] = useState<string | null>(null);
+    const [cancelMode, setCancelMode] = useState(false);
     const customerFunctions = new CustomerFunctions(setPopupMessage, language);
 
-    const items = Object.values(produce);
+    const {items, decrementItem, subtotal} = useOrder();
 
     const navigate = useNavigate();
 
@@ -43,7 +44,6 @@ export default function Order() {
         navigate("/payNow");
     }
 
-    const subtotal = items.reduce((acc, item) => acc+item.price, 0);
 
 
     return (
@@ -80,14 +80,25 @@ export default function Order() {
                         }}
                     >
                         <div>
-                            {items.map((item, index) => (
+                            {items.map((item) => {
+                                const label = item.quantity > 1
+                                    ? `${item.name} ${item.quantity}x / @${item.unitPrice.toFixed(2)} each`
+                                    : item.name;
+                                return(
                                 <OrderItem
-                                    key={index}
-                                    name={item.name[language]}
-                                    price={`$${item.price.toFixed(2)}`}
+                                    key={item.plu}
+                                    name={label}
+                                    price={`$${(item.unitPrice*item.quantity).toFixed(2)}`}
                                     taxable={item.taxable}
+                                    onSelect={
+                                    cancelMode
+                                        ? () => {
+                                        decrementItem(item.plu)
+                                        setCancelMode(false);
+                                        } : undefined
+                                    }
                                 />
-                            ))}
+                            )})}
                         </div>
                     </div>
                     <div
@@ -176,9 +187,9 @@ export default function Order() {
                 </button>
                 <button
                     style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white" , borderRight: "1px solid black"}}
-                    onClick={() => customerFunctions.callCashier()}
+                    onClick={() => setCancelMode(prev => !prev)}
                 >
-                    {text[language].cancelItems}
+                    {cancelMode ? 'Press Item to Cancel' : text[language].cancelItems}
                 </button>
                 <button
                     style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white", borderRight: "1px transparent" }}
