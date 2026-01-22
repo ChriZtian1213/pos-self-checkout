@@ -4,7 +4,8 @@ export interface OrderItemData {
     name: string;
     unitPrice: number;
     quantity: number;
-    taxable: "T" | "F" | "TF" | ""
+    taxable: "T" | "F" | "TF" | "";
+    image?: string;
 }
 
 export class ManageOrder {

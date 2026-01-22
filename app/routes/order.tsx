@@ -24,6 +24,7 @@ export default function Order() {
     const customerFunctions = new CustomerFunctions(setPopupMessage, language);
 
     const {items, decrementItem, subtotal} = useOrder();
+    const mostRecentItem = items[items.length - 1];
 
     const navigate = useNavigate();
 
@@ -153,9 +154,9 @@ export default function Order() {
                         }}
                     >
                         <img
-                            src="https://via.placeholder.com/250"
+                            src={mostRecentItem?.image ? `/produceImages/${mostRecentItem.image}` : "https://via.placeholder.com/250"}
                             alt="Product"
-                            style={{ maxWidth: "100%", maxHeight: "100%" }}
+                            style={{ maxWidth: "50vh", maxHeight: "50vh" }}
                         />
                     </div>
 

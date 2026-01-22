@@ -45,13 +45,13 @@ export default function ProduceNoBarcode(){
     const handleConfirmQuantity = () => {
         const qty = Number(quantityInput);
         if (!Number.isInteger(qty) || qty <= 0) return;
-
         manageOrder.addProduce(
             {
                 plu: selectedProduce!.plu,
                 name: selectedProduce!.name,
                 price: selectedProduce!.price,
                 taxable: selectedProduce!.taxable,
+                image: selectedProduce!.image,
             },
             qty
         );

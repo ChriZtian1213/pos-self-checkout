@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useRef, useState} from "react";
-import {ManageOrder} from "~/services/ManageOrder";
+import {ManageOrder, type OrderItemData} from "~/services/ManageOrder";
 import type {ProduceItem} from "~/data/produce";
 import {text} from "~/i18n/text";
 
@@ -16,6 +16,8 @@ const OrderContext = createContext<OrderContextValue | null>(null);
 export function OrderProvider({ children }: {children: React.ReactNode}) {
     const order = useRef(new ManageOrder()).current;
     const [, forceUpdate] = useState(0);
+    const [lastScanned, setLastScanned] = useState<OrderItemData | null>(null);
+
     const decrementItem = (plu: string) => {
         order.decrementItem(plu);
         sync();
@@ -29,10 +31,12 @@ export function OrderProvider({ children }: {children: React.ReactNode}) {
                 plu: item.plu,
                 name: item.name.en,
                 unitPrice: item.price,
-                taxable: item.taxable
+                taxable: item.taxable,
+                image: item.image
             },
             quantity,
         );
+
         sync();
     };
 
