@@ -1,14 +1,13 @@
-import {ManageOrder, type OrderItemData} from "~/services/ManageOrder";
 import {OrderItem} from "~/components/OrderItem";
 import {useNavigate} from "react-router";
-import {useCallback, useState} from "react";
+import {useState} from "react";
 import {CustomerFunctions} from "~/services/CustomerFunctions";
 import Popup from "~/components/Popup";
 import {useLanguage} from "~/state/LanguageContext";
-import {text} from "~/i18n/text";
-import {produce, type ProduceItem} from "~/data/produce";
 import {useOrder} from "~/state/OrderContext";
-
+import {text} from "~/i18n/text";
+import {bakery} from "~/data/bakery";
+import {misc} from "~/data/misc";
 
 
 export function meta() {
@@ -21,6 +20,10 @@ export default function Order() {
     const {language} = useLanguage();
     const [popupMessage, setPopupMessage] = useState<string | null>(null);
     const [cancelMode, setCancelMode] = useState(false);
+    const [activeCategory, setActiveCategory] = useState<"none" | "produce" | "saltIce" | "bakery">("none");
+
+    const [selectedItem, setSelectedItem] = useState<"none">("none");
+
     const customerFunctions = new CustomerFunctions(setPopupMessage, language);
 
     const {items, decrementItem, subtotal} = useOrder();
@@ -29,7 +32,9 @@ export default function Order() {
     const navigate = useNavigate();
 
     const handleGoBack = () => {
-        navigate("/");
+        if (activeCategory == "none") {
+            navigate("/");
+        } else setActiveCategory("none");
     }
     const handleProduceNoBarcode = () => {
         navigate("/produce");
@@ -39,10 +44,8 @@ export default function Order() {
     }
 
 
-
     const handlePayNow = () => {
-        if (popupMessage !== null) return;
-        navigate("/payNow");
+        navigate("/pay");
     }
 
 
@@ -83,8 +86,8 @@ export default function Order() {
                         <div>
                             {items.map((item) => {
                                 const label = item.quantity > 1
-                                    ? `${item.name} ${item.quantity}x / @${item.unitPrice.toFixed(2)} each`
-                                    : item.name;
+                                    ? `${item.name[language]} ${item.quantity}x / @${item.unitPrice.toFixed(2)} ${text[language].each}`
+                                    : item.name[language];
                                 return(
                                 <OrderItem
                                     key={item.plu}
@@ -123,10 +126,9 @@ export default function Order() {
                     style={{
                         flex: 1,
                         padding: "1rem",
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "#f2f2f2",
                         display: "flex",
                         flexDirection: "column",
-                        justifyContent: "space-between",
                     }}
                 >
                     <div
@@ -144,30 +146,99 @@ export default function Order() {
                     {/* Product Image */}
                     <div
                         style={{
-                            flex: 1,
                             display: "flex",
+                            flex: 1,
                             justifyContent: "center",
                             alignItems: "center",
                             border: "1px solid #ccc",
                             borderRadius: "8px",
-                            marginBottom: "1rem",
+                            margin: "1rem",
+                            maxHeight:
+                                activeCategory === "saltIce" ? "30vh" : "60vh",
                         }}
                     >
                         <img
-                            src={mostRecentItem?.image ? `/produceImages/${mostRecentItem.image}` : "https://via.placeholder.com/250"}
+                            src={mostRecentItem?.image ? `/${mostRecentItem.category}Images/${mostRecentItem.image}` : "/pleaseScanItem.jpg"}
                             alt="Product"
-                            style={{ maxWidth: "50vh", maxHeight: "50vh" }}
+                            style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
                         />
                     </div>
-
-                    {/* Category Buttons */}
                     <div style={{ display: "flex", gap: "0.5rem" }}>
-                        <button
-                            style={{ flex: 1, padding: "1rem" }}
-                            onClick={handleProduceNoBarcode}
-                                >{text[language].produceNoBarcode}</button>
-                        <button style={{ flex: 1, padding: "1rem" }}>{text[language].saltIce}</button>
-                        <button style={{ flex: 1, padding: "1rem" }}>{text[language].bakery}</button>
+                        {activeCategory === "none" || activeCategory === "produce" ? (
+                            <>
+                                <button
+                                    style={{ flex: 1, padding: "1rem" }}
+                                    onClick={() => handleProduceNoBarcode()}
+                                >
+                                    {text[language].produceNoBarcode}
+                                </button>
+                                <button
+                                    style={{ flex: 1, padding: "1rem" }}
+                                    onClick={() => setActiveCategory("saltIce")}
+                                >
+                                    {text[language].saltIce}
+                                </button>
+                                <button
+                                    style={{ flex: 1, padding: "1rem" }}
+                                    onClick={() => setActiveCategory("bakery")}
+                                >
+                                    {text[language].bakery}
+                                </button>
+                            </>
+                        ) : null}
+
+                        {activeCategory === "bakery" && (
+                            <>
+                                <button
+                                    style={{ flex: 1, padding: "1rem" }}
+                                    onClick={() =>
+                                        navigate("/addItem", {state: {item : bakery.donut}})}
+                                >
+                                    {text[language].donut}</button>
+                                <button
+                                    style={{ flex: 1, padding: "1rem" }}
+                                    onClick={() =>
+                                        navigate("/addItem", {state: {item : bakery.mexicanPastry}})}
+                                >
+                                    {text[language].mexicanPastry}</button>
+                                <button
+                                    style={{ flex: 1, padding: "1rem", height: "10vh" }}
+                                    onClick={() =>
+                                        navigate("/addItem", {state: {item : bakery.bolillo}})}
+                                >
+                                    {text[language].bolillos}</button>
+                            </>
+                        )}
+
+                        {activeCategory === "saltIce" && (
+                            <div
+                                style={{
+                                    display: "grid",
+                                    gridTemplateColumns: "repeat(3, 1fr)",
+                                    gridTemplateRows: "repeat(3, 1fr)",
+                                    gap: "0.5rem",
+                                    width: "40vh",
+                                    height: "30vh",
+                                    margin: "0 auto",
+                                }}
+                            >
+                                <button style={{ flex: 1, padding: "1rem" }}
+                                        onClick={() =>
+                                            navigate("/addItem", {state: {item : misc.ice}})}
+                                >
+                                    {text[language].ice}</button>
+                                <button style={{ flex: 1, padding: "1rem" }}
+                                        onClick={() =>
+                                            navigate("/addItem", {state: {item : misc.propaneExchange}})}
+                                >
+                                    {text[language].propaneExchange}</button>
+                                <button style={{ flex: 1, padding: "1rem" }}
+                                        onClick={() =>
+                                            navigate("/addItem", {state: {item : misc.propanePurchase}})}
+                                >
+                                    {text[language].propanePurchase}</button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -178,6 +249,7 @@ export default function Order() {
                     display: "flex",
                     width: "100%",
                     height: "80px",
+
                 }}
             >
                 <button
@@ -189,8 +261,9 @@ export default function Order() {
                 <button
                     style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white" , borderRight: "1px solid black"}}
                     onClick={() => setCancelMode(prev => !prev)}
+                    disabled={items.length === 0}
                 >
-                    {cancelMode ? 'Press Item to Cancel' : text[language].cancelItems}
+                    {cancelMode ? text[language].cancellingItem : text[language].cancelItems}
                 </button>
                 <button
                     style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white", borderRight: "1px transparent" }}
@@ -204,6 +277,7 @@ export default function Order() {
                     0.00{} lb
                 </div>
                 <button
+                    onClick={handlePayNow}
                     style={{ flex: 2, border: "none", cursor: "pointer", backgroundColor: "#008b24", color: "white", fontSize: "1rem", borderRight: "1px solid white" }}
                 >
                     {text[language].payNow}

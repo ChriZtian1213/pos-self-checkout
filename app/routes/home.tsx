@@ -24,6 +24,7 @@ export default function Home() {
 
     const handleUseBags = () =>
         customerFunctions.useBags()
+
     const handleCallCashier = () =>
         customerFunctions.callCashier();
 

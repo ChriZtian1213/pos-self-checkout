@@ -1,13 +1,13 @@
 import React, {useState} from "react";
 import {useLanguage} from "~/state/LanguageContext";
 import {text} from "~/i18n/text";
-import type {ProduceItem} from "~/data/produce";
+import type {CatalogItem} from "~/data/catalogTypes";
 
 const PRODUCE_PER_PAGE = 8;
 
 interface ProduceGridProps {
-    produceItems: ProduceItem[];
-    onClick?: (item: ProduceItem) => void;
+    produceItems: CatalogItem[];
+    onClick?: (item: CatalogItem) => void;
 }
 
 export const ProduceGrid: React.FC<ProduceGridProps> = ({

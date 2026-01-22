@@ -1,4 +1,5 @@
 import React from "react";
+import {text} from "~/i18n/text";
 
 interface OrderItemProps {
     name: string;

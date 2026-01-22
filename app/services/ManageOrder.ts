@@ -1,11 +1,13 @@
+import type {LangText} from "~/state/LanguageContext";
 
 export interface OrderItemData {
     plu: string;
-    name: string;
+    name: LangText;
     unitPrice: number;
     quantity: number;
     taxable: "T" | "F" | "TF" | "";
     image?: string;
+    category: string;
 }
 
 export class ManageOrder {
@@ -47,4 +49,10 @@ export class ManageOrder {
             (acc, item) => acc + item.unitPrice * item.quantity, 0);
     }
 
+    getTotal() {
+        return this.items.reduce((acc, item) => {
+            const taxMultiplier = item.taxable === "T" || item.taxable === "TF" ? 1.0825 : 1;
+            return acc + item.unitPrice * item.quantity * taxMultiplier;
+        }, 0);
+    }
 }

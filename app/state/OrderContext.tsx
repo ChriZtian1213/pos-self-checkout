@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useRef, useState} from "react";
 import {ManageOrder, type OrderItemData} from "~/services/ManageOrder";
-import type {ProduceItem} from "~/data/produce";
-import {text} from "~/i18n/text";
+import type {CatalogItem} from "~/data/catalogTypes";
 
 interface OrderContextValue {
     items: ReturnType<ManageOrder["getItems"]>;
-    addProduce: (item: ProduceItem, quantity: number) => void;
+    addItem: (item: CatalogItem, quantity: number) => void;
     removeItem: (plu: string) => void;
     decrementItem: (plu: string) => void;
     subtotal: number;
@@ -16,7 +15,6 @@ const OrderContext = createContext<OrderContextValue | null>(null);
 export function OrderProvider({ children }: {children: React.ReactNode}) {
     const order = useRef(new ManageOrder()).current;
     const [, forceUpdate] = useState(0);
-    const [lastScanned, setLastScanned] = useState<OrderItemData | null>(null);
 
     const decrementItem = (plu: string) => {
         order.decrementItem(plu);
@@ -25,14 +23,15 @@ export function OrderProvider({ children }: {children: React.ReactNode}) {
 
     const sync = () => forceUpdate(v => v+1);
 
-    const addProduce = (item: ProduceItem, quantity: number) => {
+    const addItem = (item: CatalogItem, quantity: number) => {
         order.addItem(
             {
                 plu: item.plu,
-                name: item.name.en,
+                name: item.name,
                 unitPrice: item.price,
                 taxable: item.taxable,
-                image: item.image
+                image: item.image,
+                category: item.category,
             },
             quantity,
         );
@@ -48,7 +47,7 @@ export function OrderProvider({ children }: {children: React.ReactNode}) {
     return(
         <OrderContext.Provider value={{
             items: order.getItems(),
-            addProduce,
+            addItem,
             removeItem,
             decrementItem,
             subtotal: order.getSubtotal(),

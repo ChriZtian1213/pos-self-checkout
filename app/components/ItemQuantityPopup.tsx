@@ -1,18 +1,20 @@
-import React, {useState} from "react";
-import type {ProduceItem} from "~/data/produce";
-import {Numpad} from "~/components/Numpad";
+import React from "react";
+import type {CatalogItem} from "~/data/catalogTypes";
+import {text} from "~/i18n/text";
+import {useLanguage} from "~/state/LanguageContext";
 
-interface ProduceQuantityProps {
-    item: ProduceItem;
+interface ItemQuantityProps {
+    item: CatalogItem;
     onConfirm: (quantity: number) => void;
     onCancel: () => void;
     quantity: string;
     onQuantityChange: (value: string) => void;
 }
 
-export const ProduceQuantityPopup: React.FC<ProduceQuantityProps> = ({
+export const ItemQuantityPopup: React.FC<ItemQuantityProps> = ({
     item, onConfirm, onCancel, quantity, onQuantityChange
 }) => {
+    const {language} = useLanguage();
 
     return (
         <div
@@ -33,12 +35,12 @@ export const ProduceQuantityPopup: React.FC<ProduceQuantityProps> = ({
                 }}
             >
                 {/* Item display */}
-                <h2>{item.name.en}</h2>
+                <h2>{item.name[language]}</h2>
                 {item.image && (
                     <img
-                        src={`/produceImages/${item.image}`}
+                        src={`/${item.category}Images/${item.image}`}
                         alt={item.name.en}
-                        style={{ width: "100px", height: "100px" }}
+                        style={{ width: "200px", height: "200px" }}
                     />
                 )}
 

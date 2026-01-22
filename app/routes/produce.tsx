@@ -1,14 +1,14 @@
-import {useEffect, useState} from "react";
-import {produce, type ProduceItem} from "~/data/produce";
+import {useState} from "react";
+import {produce} from "~/data/produce";
 import {useNavigate} from "react-router";
 import {ProduceGrid} from "~/components/ProduceGrid";
 import {Numpad} from "~/components/Numpad";
 import {QwertyKeyboard} from "~/components/Keyboard";
 import {useLanguage} from "~/state/LanguageContext";
 import {text} from "~/i18n/text";
-import {ProduceQuantityPopup} from "~/components/ProduceQuantity";
-import {ManageOrder} from "~/services/ManageOrder";
+import {ItemQuantityPopup} from "~/components/ItemQuantityPopup";
 import {useOrder} from "~/state/OrderContext";
+import type {CatalogItem} from "~/data/catalogTypes";
 
 export function meta(){
     return [
@@ -24,7 +24,7 @@ export default function ProduceNoBarcode(){
 
     const [isPlu, setIsPlu] = useState(true);
     const [currentInput, setCurrentInput] = useState("");
-    const [selectedProduce, setSelectedProduce] = useState<ProduceItem | null>(null);
+    const [selectedProduce, setSelectedProduce] = useState<CatalogItem | null>(null);
     const [quantityInput, setQuantityInput] = useState("");
 
     const produceArray = Object.values(produce);
@@ -36,7 +36,7 @@ export default function ProduceNoBarcode(){
         }
     })
 
-    const handleProduceSelect = (item: ProduceItem) => {
+    const handleProduceSelect = (item: CatalogItem) => {
         setSelectedProduce(item);
         setQuantityInput("");
         setIsPlu(true);
@@ -45,13 +45,14 @@ export default function ProduceNoBarcode(){
     const handleConfirmQuantity = () => {
         const qty = Number(quantityInput);
         if (!Number.isInteger(qty) || qty <= 0) return;
-        manageOrder.addProduce(
+        manageOrder.addItem(
             {
                 plu: selectedProduce!.plu,
                 name: selectedProduce!.name,
                 price: selectedProduce!.price,
                 taxable: selectedProduce!.taxable,
                 image: selectedProduce!.image,
+                category: selectedProduce!.category,
             },
             qty
         );
@@ -74,7 +75,7 @@ export default function ProduceNoBarcode(){
                 {/* Left column: grid + pagination */}
                 <div style={{ flex: 2, display: "flex", flexDirection: "column" }}>
                     {selectedProduce? (
-                        <ProduceQuantityPopup item={selectedProduce} onConfirm={handleConfirmQuantity} onCancel={handleCancel} quantity={quantityInput} onQuantityChange={setQuantityInput} />
+                        <ItemQuantityPopup item={selectedProduce} onConfirm={handleConfirmQuantity} onCancel={handleCancel} quantity={quantityInput} onQuantityChange={setQuantityInput} />
                         ) : (
                     <ProduceGrid
                         produceItems={filteredProduce}
