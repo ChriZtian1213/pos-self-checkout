@@ -213,6 +213,7 @@ export default function Order() {
                         {activeCategory === "saltIce" && (
                             <div
                                 style={{
+                                    flex: 1,
                                     display: "grid",
                                     gridTemplateColumns: "repeat(3, 1fr)",
                                     gridTemplateRows: "repeat(3, 1fr)",
