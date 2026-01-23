@@ -2,7 +2,6 @@ import type { Route } from "./+types/home";
 import {useLocation, useNavigate} from "react-router";
 import React, {useState} from "react";
 import Popup from '../components/Popup';
-import {CashierFunctions} from "~/services/CashierFunctions";
 import {CustomerFunctions} from "~/services/CustomerFunctions";
 import {text} from "~/i18n/text";
 import {LanguageButton} from "~/components/LanguageButton";

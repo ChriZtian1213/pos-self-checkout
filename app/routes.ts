@@ -6,4 +6,5 @@ export default [
     route("produce", "routes/produce.tsx"),
     route("pay", "routes/pay.tsx"),
     route('addItem', 'routes/addItem.tsx'),
+    route('cashierSignIn', 'routes/cashierSignIn.tsx'),
 ] satisfies RouteConfig;

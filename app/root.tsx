@@ -9,7 +9,6 @@ import {
 
 import type { Route } from "./+types/root";
 import {LanguageProvider} from "~/state/LanguageContext";
-import {ProduceGrid} from "~/components/ProduceGrid";
 import {OrderProvider} from "~/state/OrderContext";
 
 export const links: Route.LinksFunction = () => [

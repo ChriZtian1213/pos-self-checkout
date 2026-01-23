@@ -188,7 +188,18 @@ export default function Order() {
                         ) : null}
 
                         {activeCategory === "bakery" && (
-                            <>
+                            <div
+                                style={{
+                                    flex: 1,
+                                    display: "grid",
+                                    gridTemplateColumns: "repeat(3, 1fr)",
+                                    gridTemplateRows: "repeat(3, 1fr)",
+                                    gap: "0.5rem",
+                                    width: "40vh",
+                                    height: "30vh",
+                                    margin: "0 auto",
+                                }}
+                            >
                                 <button
                                     style={{ flex: 1, padding: "1rem" }}
                                     onClick={() =>
@@ -207,7 +218,7 @@ export default function Order() {
                                         navigate("/addItem", {state: {item : bakery.bolillo}})}
                                 >
                                     {text[language].bolillos}</button>
-                            </>
+                            </div>
                         )}
 
                         {activeCategory === "saltIce" && (
