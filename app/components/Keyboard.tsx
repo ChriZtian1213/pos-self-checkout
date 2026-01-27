@@ -2,9 +2,10 @@ import React from "react";
 interface QwertyKeyboardProps {
     nameInput: string;
     setNameInput: (name: string) => void;
+    hasInputBox?: boolean;
 }
 
-export const QwertyKeyboard: React.FC<QwertyKeyboardProps> = ({nameInput, setNameInput}) => {
+export const QwertyKeyboard: React.FC<QwertyKeyboardProps> = ({nameInput, setNameInput, hasInputBox = true}) => {
     const rows = [
         ["Q","W","E","R","T","Y","U","I","O","P","⌫"],
         ["A","S","D","F","G","H","J","K","L", "SPACE"],
@@ -20,20 +21,23 @@ export const QwertyKeyboard: React.FC<QwertyKeyboardProps> = ({nameInput, setNam
     };
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", maxWidth:"64vh"}}>
-            <div
-                style={{
-                    height: "60px",
-                    border: "2px solid #ccc",
-                    borderRadius: "6px",
-                    fontSize: "2rem",
-                    padding: "0.5rem",
-                    textAlign: "right",
-                    backgroundColor: "#f8f8f8",
-                }}
-            >
-                {nameInput}
-            </div>
+        <div>
+            <div style={{ display: "flex", flexDirection: "column", maxWidth:"64vh"}}>
+                {hasInputBox && (
+                <div
+                    style={{
+                        height: "60px",
+                        border: "2px solid #ccc",
+                        borderRadius: "6px",
+                        fontSize: "2rem",
+                        padding: "0.5rem",
+                        textAlign: "right",
+                        backgroundColor: "#f8f8f8",
+                    }}
+                >
+                    {nameInput}
+                </div>
+            )}
             {rows.map((row, rowIndex) => (
                 <div key={rowIndex} style={{ display: "flex", justifyContent: "center" }}>
                     {row.map((key) => (
@@ -53,5 +57,5 @@ export const QwertyKeyboard: React.FC<QwertyKeyboardProps> = ({nameInput, setNam
                 </div>
             ))}
         </div>
-    );
+    </div>);
 }
