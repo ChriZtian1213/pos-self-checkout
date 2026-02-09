@@ -28,6 +28,11 @@ export default function ProduceNoBarcode(){
     const [quantityInput, setQuantityInput] = useState("");
 
     const produceArray = Object.values(produce);
+
+    const findProduceByPlu = (plu: string) => {
+        return produceArray.find(item => item.plu === plu);
+    }
+
     const filteredProduce = produceArray.filter(item => {
         if (isPlu){
             return item.plu.startsWith(currentInput);
@@ -36,9 +41,43 @@ export default function ProduceNoBarcode(){
         }
     })
 
+    const applyKey =(value: string, key: string) => {
+        if (key === "⌫") return value.slice(0, -1);
+        if (key === text[language].clear) return "";
+        if (key === "SPACE") return value + " ";
+        return value + key;
+    }
+
+
+    const handleKeyPress = (key: string) => {
+        if (selectedProduce) {
+            if (key === text[language].enter) {
+                setCurrentInput("");
+                handleConfirmQuantity();
+                return;
+            }
+
+            setQuantityInput(prev => applyKey(prev, key));
+            return;
+        }
+        if (isPlu && key === text[language].enter) {
+            const match = findProduceByPlu(currentInput);
+
+            if (match) {
+                setSelectedProduce(match);
+                setCurrentInput("");
+            }
+
+            return;
+        }
+
+        setCurrentInput(prev => applyKey(prev, key));
+    }
+
     const handleProduceSelect = (item: CatalogItem) => {
         setSelectedProduce(item);
         setQuantityInput("");
+        setCurrentInput("");
         setIsPlu(true);
     }
 
@@ -86,7 +125,7 @@ export default function ProduceNoBarcode(){
                         <div style={{
                             display: "flex", justifyContent: "center", paddingBottom: "5rem", alignItems: "center"
                         }}>
-                            <QwertyKeyboard nameInput={currentInput} setNameInput={setCurrentInput} />
+                            <QwertyKeyboard value={currentInput} onKeyPress={handleKeyPress} />
                         </div>
                     ) : (
                         <></>
@@ -96,9 +135,8 @@ export default function ProduceNoBarcode(){
 
                 {/* Right column: numpad */}
                 {isPlu ? (
-                    <Numpad input={!selectedProduce ? currentInput : quantityInput}
-                            setInput={!selectedProduce? setCurrentInput : setQuantityInput}
-                            onEnter={!selectedProduce? undefined : handleConfirmQuantity}
+                    <Numpad value={currentInput}
+                            onKeyPress={handleKeyPress}
                     />
                 ): (<></>)}
 

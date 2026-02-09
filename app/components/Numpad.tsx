@@ -3,22 +3,13 @@ import {text} from "~/i18n/text";
 import {useLanguage} from "~/state/LanguageContext";
 
 interface NumpadProps {
-    input: string;
-    setInput: (plu: string) => void;
-    onEnter?: () => void;
+    value: string;
+    onKeyPress: (key: string) => void;
+    mask?: boolean;
 }
 
-export const Numpad: React.FC<NumpadProps> = ({input, setInput, onEnter}) => {
+export const Numpad: React.FC<NumpadProps> = ({value, onKeyPress, mask = false}) => {
     const {language} = useLanguage();
-    const handleKey = (key: string) => {
-        if (key === "⌫") setInput(input.slice(0, -1));
-        else if (key === text[language].enter){
-            onEnter?.();
-        }
-        else if (key === text[language].clear) setInput(input.slice(0, 0));
-        else setInput(input + key);
-    };
-
     const keys = ["7","8","9","4","5","6","1","2","3","⌫","0", text[language].clear];
 
     return (
@@ -34,7 +25,9 @@ export const Numpad: React.FC<NumpadProps> = ({input, setInput, onEnter}) => {
                     backgroundColor: "#f8f8f8",
                 }}
             >
-                {input}
+                {mask
+                        ? "•".repeat(value.length)
+                        : value}
             </div>
             <div
                 style={{
@@ -49,7 +42,7 @@ export const Numpad: React.FC<NumpadProps> = ({input, setInput, onEnter}) => {
                     <button
                         key={key}
                         style={{ fontSize: "1.5rem", cursor: "pointer", minHeight: "10vh",  }}
-                        onClick={() => handleKey(key)}
+                        onClick={() => onKeyPress(key)}
                     >
                         {key}
                     </button>
@@ -63,7 +56,7 @@ export const Numpad: React.FC<NumpadProps> = ({input, setInput, onEnter}) => {
                 <button
                     key="enter"
                     style={{fontSize: "1.5rem", cursor: "pointer", minHeight: "8vh", minWidth: "30vh"}}
-                    onClick={() => onEnter?.()}
+                    onClick={() => onKeyPress(text[language].enter)}
                 >
                     {text[language].enter}
                 </button>
