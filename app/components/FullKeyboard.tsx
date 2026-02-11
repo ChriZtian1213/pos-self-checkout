@@ -8,21 +8,38 @@ interface FullKeyboardProps {
 
 export const FullKeyboard: React.FC<FullKeyboardProps> = ({value, mask=false, onKeyPress}) => {
     const [shift, setShift] = useState(false);
+    const [capsLock, setCapsLock] = useState(false);
+    const isUppercase = capsLock !== shift;
+
+
 
     const rows = [
-        { letters: ["Q","W","E","R","T","Y","U","I","O","P"], numbers: ["7","8","9"],  },
-        { letters: ["A","S","D","F","G","H","J","K","L"], numbers: ["4","5","6"],  },
-        { letters: ["CLEAR", "Z","X","C","V","B","N","M"], numbers: ["1","2","3"], },
-        { letters: ["SHIFT", "SPACE"], numbers: ["0", "ENTER"],}
+        { letters: ["q","w","e","r","t","y","u","i","o","p"], numbers: ["7","8","9"] },
+        { letters: ["a","s","d","f","g","h","j","k","l"], numbers: ["4","5","6"] },
+        { letters: ["clear","z","x","c","v","b","n","m"], numbers: ["1","2","3"] },
+        { letters: ["caps lock","shift","SPACE"], numbers: ["0","enter"] },
     ];
+
+    const CONTROL_KEYS = new Set([
+        "clear", "caps lock", "shift", "SPACE", "enter"
+    ])
 
     const handleClick = (key: string) => {
         if (key === "SHIFT"){
-            setShift(true);
+            setShift(prev => !prev);
             return;
         }
-        const outputKey = shift && key.length === 1 && /[a-zA-Z]/.test(key) ? key.toUpperCase() : key;
-        onKeyPress(outputKey);
+
+        if (key === "ENTER"){
+            return;
+        }
+        if (key === "CAPS LOCK"){
+            setCapsLock(prev => !prev);
+            return;
+        }
+        const output = isUppercase ? key.toUpperCase() : key.toLowerCase();
+        onKeyPress(output);
+        if (shift) setShift(prev => !prev);
     }
 
     return (
@@ -61,7 +78,10 @@ export const FullKeyboard: React.FC<FullKeyboardProps> = ({value, mask=false, on
                             justifyContent: "flex-end",
                         }}
                     >
-                        {row.letters.map((key) => (
+                        {row.letters.map((key) => {
+                            const isLetter = key.length === 1 && /[a-z]/.test(key);
+                            const displayKey = isLetter ? (isUppercase ? key.toUpperCase() : key.toLowerCase()) : key.toUpperCase();
+                            return (
                             <button
                                 key={key}
                                 onClick={() => handleClick(key)}
@@ -71,19 +91,20 @@ export const FullKeyboard: React.FC<FullKeyboardProps> = ({value, mask=false, on
                                             ? "280px"
                                             : key === "CLEAR" || key === "SHIFT"
                                                 ? "120px"
-                                                : "56px",
+                                                : "80px",
                                     height: "56px",
                                     fontSize: "1.1rem",
                                     cursor: "pointer",
-
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
+                                    backgroundColor:
+                                        key === "CAPS LOCK" ? capsLock ? "#949292" : "white" : "white",
                                 }}
                             >
-                                {key === "SPACE" ? "" : key}
+                                {key === "SPACE" ? "" : displayKey}
                             </button>
-                        ))}
+                        );})}
                     </div>
 
                     {/* Numpad column (fixed width) */}
@@ -98,7 +119,7 @@ export const FullKeyboard: React.FC<FullKeyboardProps> = ({value, mask=false, on
                         {row.numbers.map((key) => (
                             <button
                                 key={key}
-                                style={{ padding: "1rem", fontSize: "1.2rem" }}
+                                style={{ padding: "1rem", fontSize: "1.2rem", backgroundColor: "white" }}
                                 onClick={() => handleClick(key)}
                             >
                                 {key}

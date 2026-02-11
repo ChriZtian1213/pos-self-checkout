@@ -20,13 +20,15 @@ export default function CashierSignIn() {
         useState<"username" | "password">("username");
 
     const handleLoginKeyPress = (key: string) => {
-        if (key === "Enter") {
+        if (key === "enter") {
             if (activeField === "username") {
                 setActiveField("password");
             } else {
                 console.log("hi!");
             }
+            return;`m`
         }
+
         if (activeField === "username") {
             setUsername(prev => applyKey(prev, key));
         } else {
@@ -36,9 +38,8 @@ export default function CashierSignIn() {
 
     const applyKey = (value: string, key: string) => {
         if (key === "⌫") return value.slice(0, -1);
-        if (key === "Clear" || key === "CLEAR") return "";
-        if (key === "Enter") return value;
-        if (key === "SPACE") return value + " ";
+        if (key === "clear" || key === "CLEAR") return "";
+        if (key === "space") return value + " ";
         return value + key;
     };
 
