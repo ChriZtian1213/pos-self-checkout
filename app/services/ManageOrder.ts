@@ -55,4 +55,13 @@ export class ManageOrder {
             return acc + item.unitPrice * item.quantity * taxMultiplier;
         }, 0);
     }
+
+    getSnapEligible(){
+        return this.items.reduce((acc, item) => {
+            const isSnapEligible = item.taxable === "F" || "TF";
+            if (!isSnapEligible) return acc;
+            return acc + item.unitPrice * item.quantity;
+        }, 0);
+    }
+
 }

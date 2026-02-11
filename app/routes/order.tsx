@@ -21,9 +21,6 @@ export default function Order() {
     const [popupMessage, setPopupMessage] = useState<string | null>(null);
     const [cancelMode, setCancelMode] = useState(false);
     const [activeCategory, setActiveCategory] = useState<"none" | "produce" | "saltIce" | "bakery">("none");
-
-    const [selectedItem, setSelectedItem] = useState<"none">("none");
-
     const customerFunctions = new CustomerFunctions(setPopupMessage, language);
 
     const {items, decrementItem, subtotal} = useOrder();
@@ -52,6 +49,7 @@ export default function Order() {
 
     return (
         <div
+
             style={{
                 display: "flex",
                 flexDirection: "column",

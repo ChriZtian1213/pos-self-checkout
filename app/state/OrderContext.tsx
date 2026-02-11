@@ -8,6 +8,9 @@ interface OrderContextValue {
     removeItem: (plu: string) => void;
     decrementItem: (plu: string) => void;
     subtotal: number;
+    total: number;
+    tax: number;
+    snapSubtotal: number;
 }
 
 const OrderContext = createContext<OrderContextValue | null>(null);
@@ -44,13 +47,20 @@ export function OrderProvider({ children }: {children: React.ReactNode}) {
         sync();
     };
 
+    const subtotal = order.getSubtotal();
+    const total = order.getTotal();
+    const snapEligibleSubtotal = order.getSnapEligible();
+
     return(
         <OrderContext.Provider value={{
             items: order.getItems(),
             addItem,
             removeItem,
             decrementItem,
-            subtotal: order.getSubtotal(),
+            subtotal: subtotal,
+            total: total,
+            tax: total - subtotal,
+            snapSubtotal: snapEligibleSubtotal
         }}>
             {children}
         </OrderContext.Provider>

@@ -1,10 +1,9 @@
 import type {Route} from "./+types/cashierSignIn"
-import {useLanguage} from "~/state/LanguageContext";
-import {useState} from "react";
-import {Form} from "react-router"
 import {QwertyKeyboard} from "~/components/Keyboard";
+import {useNavigate} from "react-router";
+import {useState} from "react";
 import {Numpad} from "~/components/Numpad";
-import {text} from "~/i18n/text";
+import {FullKeyboard} from "~/components/FullKeyboard";
 
 export function meta({}: Route.MetaArgs){
     return [
@@ -12,119 +11,143 @@ export function meta({}: Route.MetaArgs){
     ]
 }
 
-export default function CashierSignIn(){
-    const {language} = useLanguage();
-    const [loginId, setLoginId] = useState("");
+export default function CashierSignIn() {
+    const navigate = useNavigate();
+
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [activeField, setActiveField] = useState<"loginId" | "password">("loginId")
+    const [activeField, setActiveField] =
+        useState<"username" | "password">("username");
+
+    const handleLoginKeyPress = (key: string) => {
+        if (key === "Enter") {
+            if (activeField === "username") {
+                setActiveField("password");
+            } else {
+                console.log("hi!");
+            }
+        }
+        if (activeField === "username") {
+            setUsername(prev => applyKey(prev, key));
+        } else {
+            setPassword(prev => applyKey(prev, key));
+        }
+    };
+
+    const applyKey = (value: string, key: string) => {
+        if (key === "⌫") return value.slice(0, -1);
+        if (key === "Clear" || key === "CLEAR") return "";
+        if (key === "Enter") return value;
+        if (key === "SPACE") return value + " ";
+        return value + key;
+    };
 
     return (
-        <div style={{
-            display: "flex",
-            flexDirection: "column",
-            backgroundColor: "yellow",
-            height: "100vh",
-            width: "100vw",
-            justifyContent: "space-between",
-        }}
-        >
-            <Form method="post">
-                <div style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: "2rem", // space between loginId and password
-                    paddingTop: "2rem"
-                }}
-                >
-                    <input
-                        type="text"
-                        name="loginId"
-                        value={loginId}
-                        onChange={(e) => setLoginId(e.target.value)}
-                        onFocus={() => setActiveField("loginId")}
-                        placeholder="Login ID"
-                        style={{
-                            width: "50%",         // makes the line not too long
-                            border: "none",       // remove default border
-                            borderBottom: "2px solid black", // show only the bottom line
-                            outline: "none",      // remove focus outline
-                            fontSize: "2rem",     // text size
-                            textAlign: "center",  // center text
-                            padding: "0.5rem 0",  // vertical padding only
-                            backgroundColor: "transparent"
-                        }}
-                    />
-                    <input
-                        type="password"
-                        name="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        onFocus={() => setActiveField("password")}
-                        placeHolder="Password"
-                        style={{
-                            width: "50%",         // makes the line not too long
-                            border: "none",       // remove default border
-                            borderBottom: "2px solid black", // show only the bottom line
-                            outline: "none",      // remove focus outline
-                            fontSize: "2rem",     // text size
-                            textAlign: "center",  // center text
-                            padding: "0.5rem 0",  // vertical padding only
-                            backgroundColor: "transparent"
-                        }}
-                    />
-                    <button type="submit" style={{
-                        width: "50%",
-                        backgroundColor: "grey",
-                        padding: "2rem",
-                        fontSize: "24px"
-                    }}
-                    >Sign In!</button>
-                </div>
-            </Form>
-            <div style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: "5rem"
-            }}>
-                <div style={{paddingTop: "8rem", transform: "scale(1.2)", paddingRight: "2wh"}}>
-                    <QwertyKeyboard nameInput={activeField === "loginId" ? loginId : password}
-                                    setNameInput={(val) => {
-                                        if (activeField === "loginId") setLoginId(val);
-                                        else if (activeField === "password") setPassword(val);
-                                    }}
-                                    hasInputBox={false}
-                    />
-                </div>
-                <div style={{transform: "scale(.8)"}}>
-                    <Numpad input={activeField==="loginId" ? loginId : password}
-                            setInput={(val) => {
-                                if (activeField === "loginId") setLoginId(val);
-                                else if (activeField === "password") setPassword(val);
-                            }}
-                            hasInputBox={false}
-                            hasEnter={false}
-                    />
-                </div>
-            </div>
         <div
             style={{
+                height: "100vh",
                 display: "flex",
-                width: "100%",
-                height: "100px",
-
+                flexDirection: "column",
+                backgroundColor: "#f2f2f2",
             }}
+        >
+            {/* Center content */}
+            <div
+                style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "1.5rem",
+                }}
+            >
+                <h2>Cashier Sign In</h2>
+
+                {/* Username */}
+                <input
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    onFocus={() => setActiveField("username")}
+                    placeholder="Username"
+                    style={{
+                        width: "320px",
+                        padding: "1rem",
+                        fontSize: "1.2rem",
+                        border:
+                            activeField === "username"
+                                ? "2px solid #008b24"
+                                : "1px solid #ccc",
+                        borderRadius: "6px",
+                    }}
+                />
+
+                {/* Password */}
+                <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onFocus={() => setActiveField("password")}
+                    placeholder="Password"
+                    style={{
+                        width: "320px",
+                        padding: "1rem",
+                        fontSize: "1.2rem",
+                        border:
+                            activeField === "password"
+                                ? "2px solid #008b24"
+                                : "1px solid #ccc",
+                        borderRadius: "6px",
+                    }}
+                />
+            </div>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    gap: "1rem",
+                    backgroundColor: "#ddd",
+                    maxHeight: "50vh",
+                    alignItems: "center",
+                    paddingBottom: "1rem",
+                }}
+            >
+                <FullKeyboard value={activeField === "username" ? username : password} onKeyPress={handleLoginKeyPress} mask={activeField === "password"}/>
+            </div>
+
+
+            {/* Bottom bar */}
+            <div
+                style={{
+                    height: "80px",
+                    display: "flex",
+                    borderTop: "1px solid #ccc",
+                }}
             >
                 <button
-                    style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white", borderRight: "1px solid black" }}
+                    style={{ flex: 1 }}
+                    onClick={() => navigate(-1)}
                 >
-                    {text[language].back}
+                    Back
                 </button>
-            <div
-                style={{ flex: 5, display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "#6f7594", color: "white", borderRight: "1px transparent" }}
-            >
+
+                <button
+                    style={{
+                        flex: 2,
+                        backgroundColor: "#008b24",
+                        color: "white",
+                        fontSize: "1.2rem",
+                        border: "none",
+                    }}
+                    onClick={() => {
+                        // TODO: validate login
+                        console.log(username, password);
+                    }}
+                >
+                    Sign In
+                </button>
             </div>
         </div>
-    </div>
     );
 }
