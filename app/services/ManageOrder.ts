@@ -58,7 +58,7 @@ export class ManageOrder {
 
     getSnapEligible(){
         return this.items.reduce((acc, item) => {
-            const isSnapEligible = item.taxable === "F" || "TF";
+            const isSnapEligible = item.taxable === "F" || item.taxable === "TF";
             if (!isSnapEligible) return acc;
             return acc + item.unitPrice * item.quantity;
         }, 0);

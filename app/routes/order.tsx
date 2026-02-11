@@ -27,8 +27,8 @@ export default function Order() {
     const {items, decrementItem, subtotal} = useOrder();
     const mostRecentItem = items[items.length - 1];
 
-    const isBackDisabled = items.length > 0;
-    const isPayDisabled = !isBackDisabled;
+    const isOrderStarted = items.length > 0;
+    const isBackEnabled = !isOrderStarted || activeCategory !== "none";
 
     const handleGoBack = () => {
         if (activeCategory == "none") {
@@ -265,16 +265,16 @@ export default function Order() {
                 }}
             >
                 <button
-                    style={{flex: 1, border: "none", cursor: isBackDisabled ? "" : "pointer", backgroundColor: isBackDisabled ? "#9294A1" : "#535668", color: "white", borderRight: "1px solid black" }}
+                    style={{flex: 1, border: "none", cursor: isOrderStarted ? "" : "pointer", backgroundColor: isOrderStarted ? "#9294A1" : "#535668", color: "white", borderRight: "1px solid black" }}
                     onClick={handleGoBack}
-                    disabled={isBackDisabled}
+                    disabled={!isBackEnabled}
                 >
                     {text[language].back}
                 </button>
                 <button
-                    style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white" , borderRight: "1px solid black"}}
+                    style={{ flex: 1, border: "none", cursor: !isOrderStarted ? "" : "pointer", backgroundColor: !isOrderStarted ? "#9294A1" : "#535668", color: "white" , borderRight: "1px solid black"}}
                     onClick={() => setCancelMode(prev => !prev)}
-                    disabled={items.length === 0}
+                    disabled={!isOrderStarted}
                 >
                     {cancelMode ? text[language].cancellingItem : text[language].cancelItems}
                 </button>
@@ -291,8 +291,8 @@ export default function Order() {
                 </div>
                 <button
                     onClick={handlePayNow}
-                    style={{ flex: 2, border: "none", cursor: isPayDisabled ? "" : "pointer", backgroundColor: isPayDisabled ? "#9294A1" : "#008b24", color: "white", fontSize: "1rem", borderRight: "1px solid white" }}
-                    disabled={isPayDisabled}
+                    style={{ flex: 2, border: "none", cursor: !isOrderStarted ? "" : "pointer", backgroundColor: !isOrderStarted ? "#9294A1" : "#008b24", color: "white", fontSize: "1rem", borderRight: "1px solid white" }}
+                    disabled={!isOrderStarted}
                 >
                     {text[language].payNow}
                 </button>

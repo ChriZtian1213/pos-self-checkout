@@ -50,17 +50,12 @@ export default function ProduceNoBarcode(){
 
 
     const handleKeyPress = (key: string) => {
-        if (key === text[language].clear || key === "CLEAR") {
-            setCurrentInput("");
-            return;
-        }
         if (selectedProduce) {
             if (key === text[language].enter) {
                 setCurrentInput("");
                 handleConfirmQuantity();
                 return;
             }
-
 
             setQuantityInput(prev => applyKey(prev, key));
             return;
@@ -153,7 +148,7 @@ export default function ProduceNoBarcode(){
                 height: "80px",
             }}>
                 <button
-                    style={{flex: 1, backgroundColor: "#535669", color: "white", borderRight: "1px black solid"}}
+                    style={{flex: 1}}
                     onClick={() => navigate("/order")}
                 >
                     {text[language].back}</button>
@@ -163,13 +158,12 @@ export default function ProduceNoBarcode(){
                         setCurrentInput("");
                     }}
                     style={{
-                        flex: 1,
-                        backgroundColor: "#535669", color: "white", borderRight: "1px black solid"
+                        flex: 1
                     }}
                     disabled={!!selectedProduce}
                 >
                     {isPlu ? text[language].nameSearch : text[language].pluSearch}</button>
-                <div style={{flex: 1, display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "#6f7594", color: "white", borderRight: "1px transparent"}}>0.00 lbs</div>
+                <div style={{flex: 1, textAlign: "center", alignItems: "center"}}>0.00 lbs</div>
             </div>
         </div>
     );
