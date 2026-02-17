@@ -209,7 +209,7 @@ export default function Order() {
                                 <button
                                     style={{ flex: 1, padding: "1rem" }}
                                     onClick={() =>
-                                        navigate("/addItem", {state: {item : bakery.mexicanPastry}})}
+                                        navigate("/addItem", {state: {item : bakery.mexicanPastry}})}   
                                 >
                                     {text[language].mexicanPastry}</button>
                                 <button

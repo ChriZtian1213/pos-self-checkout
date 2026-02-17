@@ -8,6 +8,7 @@ type UIText = {
     language: string;
     bagsMessage: string;
     cashierMessage: string;
+    exitCashierMode: string;
 
     // Order
     back: string;
@@ -46,6 +47,7 @@ export const text: Record<Language, UIText> = {
         language: "Español",
         bagsMessage: "Please place your bags in the weighing area",
         cashierMessage: "Help is on the way!",
+        exitCashierMode: "Exit Cashier Mode",
 
         // Order
         back: "Back",
@@ -82,6 +84,7 @@ export const text: Record<Language, UIText> = {
         language: "Inglés",
         bagsMessage: "Por favor, coloca tus maletas en la zona de pesaje",
         cashierMessage: "¡Ayuda viene en camino!",
+        exitCashierMode: "Salir del modo cajero",
 
         back: "Atrás",
         cancelItems: "Cancelar artículo",

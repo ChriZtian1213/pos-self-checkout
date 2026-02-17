@@ -6,6 +6,7 @@ import {CustomerFunctions} from "~/services/CustomerFunctions";
 import {text} from "~/i18n/text";
 import {LanguageButton} from "~/components/LanguageButton";
 import {useLanguage} from "~/state/LanguageContext";
+import {useRole} from "~/state/RoleContext";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -17,20 +18,39 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
     const {language} = useLanguage();
     const [popupMessage, setPopupMessage] = useState<string | null>(null);
+    const [returnRoute, setReturnRoute] = useState<string | null>(null);
     const isPopupOpen = popupMessage !== null;
     const navigate = useNavigate();
-    const customerFunctions = new CustomerFunctions(setPopupMessage, language)
+    const location = useLocation();
+    const customerFunctions = new CustomerFunctions(setPopupMessage, language);
+    const {isCustomer, setRole} = useRole();
+    const backgroundColor =  isCustomer ? "#2ba54b" : "yellow";
+    const textColor = isCustomer ? "white" : "black";
 
     const handleUseBags = () =>
         customerFunctions.useBags()
 
-    const handleCallCashier = () =>
+    const handleCallCashier = () => {
+        setReturnRoute(location.pathname);
         customerFunctions.callCashier();
+    }
 
     const handleStart = () => {
         if (isPopupOpen) return;
         navigate("/order");
     };
+
+    const handleExitCashierMode = () => {
+        setRole("customer");
+    }
+
+    const handlePopupClose = () => {
+        setPopupMessage(null);
+        if (returnRoute){
+            navigate("/cashierSignIn", {state: {from: returnRoute}});
+            setReturnRoute(null);
+        }
+    }
 
     return (
         <div
@@ -41,8 +61,8 @@ export default function Home() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 textAlign: "center",
-                backgroundColor: "#2ba54b",
-                color: "white",
+                backgroundColor: backgroundColor,
+                color: textColor    ,
                 cursor: "pointer",
             }}
             onClick={handleStart} // whole screen acts as touch-to-start
@@ -102,8 +122,20 @@ export default function Home() {
                     {text[language].callCashier}
                 </button>
                 <LanguageButton />
+                {!isCustomer && <button style={{
+                    flex: 1,
+                    fontSize: "1rem",
+                    border: "none",
+                    borderRight: "1px solid white",
+                    cursor: "pointer",
+                    backgroundColor: "#0071ff",
+                    color: "white",
+                }} onClick={handleExitCashierMode}
+                >
+                    {text[language].exitCashierMode}
+                </button>}
             </div>
-            {popupMessage && <Popup message={popupMessage} onClose={() => setPopupMessage(null)} />}
+            {popupMessage && <Popup message={popupMessage} onClose={handlePopupClose}/>}
         </div>
     );
 }
