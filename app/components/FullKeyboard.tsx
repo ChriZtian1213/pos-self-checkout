@@ -17,23 +17,16 @@ export const FullKeyboard: React.FC<FullKeyboardProps> = ({value, mask=false, on
         { letters: ["q","w","e","r","t","y","u","i","o","p"], numbers: ["7","8","9"] },
         { letters: ["a","s","d","f","g","h","j","k","l"], numbers: ["4","5","6"] },
         { letters: ["clear","z","x","c","v","b","n","m"], numbers: ["1","2","3"] },
-        { letters: ["caps lock","shift","SPACE"], numbers: ["0","enter"] },
+        { letters: ["caps lock","shift","SPACE"], numbers: ["0","enter", "⌫"] },
     ];
 
-    const CONTROL_KEYS = new Set([
-        "clear", "caps lock", "shift", "SPACE", "enter"
-    ])
-
     const handleClick = (key: string) => {
-        if (key === "SHIFT"){
+        if (key === "shift"){
             setShift(prev => !prev);
             return;
         }
 
-        if (key === "ENTER"){
-            return;
-        }
-        if (key === "CAPS LOCK"){
+        if (key === "caps lock"){
             setCapsLock(prev => !prev);
             return;
         }

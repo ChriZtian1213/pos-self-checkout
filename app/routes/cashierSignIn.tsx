@@ -4,6 +4,7 @@ import {useNavigate} from "react-router";
 import {useState} from "react";
 import {Numpad} from "~/components/Numpad";
 import {FullKeyboard} from "~/components/FullKeyboard";
+import {useRole} from "~/state/RoleContext";
 
 export function meta({}: Route.MetaArgs){
     return [
@@ -13,22 +14,39 @@ export function meta({}: Route.MetaArgs){
 
 export default function CashierSignIn() {
     const navigate = useNavigate();
+    const {setRole} = useRole();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [activeField, setActiveField] =
         useState<"username" | "password">("username");
+    const [error, setError] = useState<string | null>(null);
+
+    const TEST_USER = {
+        username: "123",
+        password: "000"
+    }
+
+    const attemptLogin = () => {
+        if (username === TEST_USER.username &&
+            password === TEST_USER.password){
+                // TODO: set to cashier mode
+                setRole("cashier")
+                navigate("/");
+       } else {
+            setError("Invalid login!")
+        }
+    }
 
     const handleLoginKeyPress = (key: string) => {
         if (key === "enter") {
             if (activeField === "username") {
                 setActiveField("password");
             } else {
-                console.log("hi!");
+                attemptLogin();
             }
-            return;`m`
+            return;
         }
-
         if (activeField === "username") {
             setUsername(prev => applyKey(prev, key));
         } else {
@@ -101,6 +119,7 @@ export default function CashierSignIn() {
                         borderRadius: "6px",
                     }}
                 />
+                {error}
             </div>
             <div
                 style={{

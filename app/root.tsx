@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import {LanguageProvider} from "~/state/LanguageContext";
 import {OrderProvider} from "~/state/OrderContext";
+import {RoleProvider} from "~/state/RoleContext";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -44,11 +45,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
     return (
-        <LanguageProvider>
-            <OrderProvider>
-                <Outlet />
-            </OrderProvider>
-        </LanguageProvider>);
+        <RoleProvider>
+            <LanguageProvider>
+                <OrderProvider>
+                    <Outlet />
+                </OrderProvider>
+            </LanguageProvider>
+        </RoleProvider>
+    );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
