@@ -1,12 +1,11 @@
 import type { Route } from "./+types/home";
 import {useLocation, useNavigate} from "react-router";
-import React, {useState} from "react";
-import Popup from '../components/Popup';
-import {CustomerFunctions} from "~/services/CustomerFunctions";
+import React from "react";
 import {text} from "~/i18n/text";
 import {LanguageButton} from "~/components/LanguageButton";
 import {useLanguage} from "~/state/LanguageContext";
 import {useRole} from "~/state/RoleContext";
+import {usePopup} from "~/state/PopupContext";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -17,40 +16,39 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
     const {language} = useLanguage();
-    const [popupMessage, setPopupMessage] = useState<string | null>(null);
-    const [returnRoute, setReturnRoute] = useState<string | null>(null);
-    const isPopupOpen = popupMessage !== null;
     const navigate = useNavigate();
     const location = useLocation();
-    const customerFunctions = new CustomerFunctions(setPopupMessage, language);
+    const {showPopup} = usePopup();
     const {isCustomer, setRole} = useRole();
     const backgroundColor =  isCustomer ? "#2ba54b" : "yellow";
     const textColor = isCustomer ? "white" : "black";
 
-    const handleUseBags = () =>
-        customerFunctions.useBags()
-
     const handleCallCashier = () => {
-        setReturnRoute(location.pathname);
-        customerFunctions.callCashier();
+        showPopup({
+            message: text[language].cashierMessage,
+            onConfirm: () => {
+                navigate("/cashierSignIn", {
+                    state: {from: location.pathname}
+                })
+            }
+        });
+    };
+
+    const handleUseBags = () => {
+        showPopup({
+            message: text[language].bagsMessage
+        })
     }
 
     const handleStart = () => {
-        if (isPopupOpen) return;
         navigate("/order");
     };
 
     const handleExitCashierMode = () => {
+
         setRole("customer");
     }
 
-    const handlePopupClose = () => {
-        setPopupMessage(null);
-        if (returnRoute){
-            navigate("/cashierSignIn", {state: {from: returnRoute}});
-            setReturnRoute(null);
-        }
-    }
 
     return (
         <div
@@ -106,36 +104,43 @@ export default function Home() {
                 >
                     {text[language].useBags}
                 </button>
+                {
+                    isCustomer && (<button
+                        style={{
+                            flex: 1,
+                            fontSize: "1rem",
+                            border: "none",
+                            borderRight: "1px solid white",
+                            cursor: "pointer",
+                            backgroundColor: isCustomer ? "#525668" : "#9294a1",
+                            color: "white",
+                        }}
+                        onClick={handleCallCashier}
+                        disabled={!isCustomer}
+                    >
+                        {text[language].callCashier}
+                    </button>)
+                    ||
+                    !isCustomer && (<button
+                        style={{
+                            flex: 1,
+                            fontSize: "1rem",
+                            border: "none",
+                            borderRight: "1px solid white",
+                            cursor: "pointer",
+                            backgroundColor: isCustomer ? "#535668" : "#0071ff",
+                            color: "white",
+                        }}
+                        onClick={handleExitCashierMode}
+                    >
+                        Exit Cashier Mode
+                    </button>)
+                }
 
-                <button
-                    style={{
-                        flex: 1,
-                        fontSize: "1rem",
-                        border: "none",
-                        borderRight: "1px solid white",
-                        cursor: "pointer",
-                        backgroundColor: "#525668",
-                        color: "white",
-                    }}
-                    onClick={handleCallCashier}
-                >
-                    {text[language].callCashier}
-                </button>
+
                 <LanguageButton />
-                {!isCustomer && <button style={{
-                    flex: 1,
-                    fontSize: "1rem",
-                    border: "none",
-                    borderRight: "1px solid white",
-                    cursor: "pointer",
-                    backgroundColor: "#0071ff",
-                    color: "white",
-                }} onClick={handleExitCashierMode}
-                >
-                    {text[language].exitCashierMode}
-                </button>}
+
             </div>
-            {popupMessage && <Popup message={popupMessage} onClose={handlePopupClose}/>}
         </div>
     );
 }

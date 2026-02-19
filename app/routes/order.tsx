@@ -1,5 +1,5 @@
 import {OrderItem} from "~/components/OrderItem";
-import {useNavigate} from "react-router";
+import {useLocation, useNavigate} from "react-router";
 import {useState} from "react";
 import {CustomerFunctions} from "~/services/CustomerFunctions";
 import Popup from "~/components/Popup";
@@ -8,6 +8,8 @@ import {useOrder} from "~/state/OrderContext";
 import {text} from "~/i18n/text";
 import {bakery} from "~/data/bakery";
 import {misc} from "~/data/misc";
+import {usePopup} from "~/state/PopupContext";
+import {useRole} from "~/state/RoleContext";
 
 
 export function meta() {
@@ -18,17 +20,33 @@ export function meta() {
 
 export default function Order() {
     const {language} = useLanguage();
+    const {isCustomer, setRole} = useRole();
+    const backgroundColor =  isCustomer ? "#f2f2f2" : "yellow";
+    const {showPopup} = usePopup();
     const navigate = useNavigate();
-    const [popupMessage, setPopupMessage] = useState<string | null>(null);
     const [cancelMode, setCancelMode] = useState(false);
     const [activeCategory, setActiveCategory] = useState<"none" | "produce" | "saltIce" | "bakery">("none");
-    const customerFunctions = new CustomerFunctions(setPopupMessage, language);
 
     const {items, decrementItem, subtotal} = useOrder();
     const mostRecentItem = items[items.length - 1];
 
     const isOrderStarted = items.length > 0;
     const isBackEnabled = !isOrderStarted || activeCategory !== "none";
+
+    const handleCancelItem = () => {
+        if (isCustomer){
+            handleCallCashier();
+            return;
+        }
+        if (!isCustomer) {
+            setCancelMode(prev => !prev);
+        }
+    }
+
+    const handleExitCashierMode = () => {
+        setCancelMode(false);
+        setRole("customer");
+    }
 
     const handleGoBack = () => {
         if (activeCategory == "none") {
@@ -39,8 +57,15 @@ export default function Order() {
         navigate("/produce");
     }
     const handleCallCashier = () => {
-        customerFunctions.callCashier()
-    }
+        showPopup({
+            message: text[language].cashierMessage,
+            onConfirm: () => {
+                navigate("/cashierSignIn", {
+                    state: { from: "/order" }
+                });
+            }
+        });
+    };
 
 
     const handlePayNow = () => {
@@ -66,7 +91,7 @@ export default function Order() {
                     style={{
                         flex: 1,
                         padding: "1rem",
-                        backgroundColor: "#f2f2f2",
+                        backgroundColor: backgroundColor,
                         display: "flex",
                         flexDirection: "column",
                     }}
@@ -98,7 +123,6 @@ export default function Order() {
                                     cancelMode
                                         ? () => {
                                         decrementItem(item.plu)
-                                        setCancelMode(false);
                                         } : undefined
                                     }
                                 />
@@ -126,7 +150,7 @@ export default function Order() {
                     style={{
                         flex: 1,
                         padding: "1rem",
-                        backgroundColor: "#f2f2f2",
+                        backgroundColor: backgroundColor,
                         display: "flex",
                         flexDirection: "column",
                     }}
@@ -273,17 +297,27 @@ export default function Order() {
                 </button>
                 <button
                     style={{ flex: 1, border: "none", cursor: !isOrderStarted ? "" : "pointer", backgroundColor: !isOrderStarted ? "#9294A1" : "#535668", color: "white" , borderRight: "1px solid black"}}
-                    onClick={() => setCancelMode(prev => !prev)}
+                    onClick={handleCancelItem}
                     disabled={!isOrderStarted}
                 >
                     {cancelMode ? text[language].cancellingItem : text[language].cancelItems}
                 </button>
-                <button
-                    style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white", borderRight: "1px transparent" }}
-                    onClick={handleCallCashier}
-                >
-                    {text[language].callCashier}
-                </button>
+                {
+                    isCustomer && (<button
+                        style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white", borderRight: "1px transparent" }}
+                        onClick={handleCallCashier}
+                    >
+                        {text[language].callCashier}
+                    </button>) ||
+
+                    !isCustomer && (<button
+                        style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: isCustomer ? "#535668" : "#0071ff", color: "white", borderRight: "1px transparent" }}
+                        onClick={handleExitCashierMode}
+                    >
+                    Exit Cashier Mode
+                    </button>)
+                }
+
                 <div
                     style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "#6f7594", color: "white", borderRight: "1px transparent" }}
                 >
@@ -297,7 +331,6 @@ export default function Order() {
                     {text[language].payNow}
                 </button>
             </div>
-            {popupMessage && <Popup message={popupMessage} onClose={() => setPopupMessage(null)} />}
         </div>
     );
 }

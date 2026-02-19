@@ -11,6 +11,7 @@ import type { Route } from "./+types/root";
 import {LanguageProvider} from "~/state/LanguageContext";
 import {OrderProvider} from "~/state/OrderContext";
 import {RoleProvider} from "~/state/RoleContext";
+import {PopupProvider} from "~/state/PopupContext";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -48,7 +49,9 @@ export default function App() {
         <RoleProvider>
             <LanguageProvider>
                 <OrderProvider>
-                    <Outlet />
+                    <PopupProvider>
+                        <Outlet />
+                    </PopupProvider>
                 </OrderProvider>
             </LanguageProvider>
         </RoleProvider>

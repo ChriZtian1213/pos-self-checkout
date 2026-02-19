@@ -1,22 +1,16 @@
 import React from "react";
-import {useNavigate} from "react-router";
 
 interface PopupProps {
     message: string;
-    onClose: () => void;
+    onConfirm?: () => void;
+    onCancel: () => void;
 }
 
-const Popup: React.FC<PopupProps> = ({message, onClose}) => {
-    const navigate = useNavigate();
-    const handleCashierSignIn = () => {
-        onClose();
-        navigate("/cashierSignIn");
-    }
-
+const Popup: React.FC<PopupProps> = ({message, onConfirm, onCancel}) => {
     return (
         // Overlay — click outside cancels
         <div
-            onClick={onClose}
+            onClick={onCancel}
             style={{
                 position: "fixed",
                 inset: 0,
@@ -57,23 +51,24 @@ const Popup: React.FC<PopupProps> = ({message, onClose}) => {
                         width: "100%",
                     }}
                 >
+                    {onConfirm && (
+                        <button
+                            onClick={onConfirm}
+                            style={{
+                                flex: 1,
+                                padding: "1.5rem",
+                                border: "none",
+                                backgroundColor: "#008b24",
+                                color: "white",
+                                fontSize: "1.2rem",
+                                cursor: "pointer",
+                            }}
+                        >
+                            Cashier Sign In
+                        </button>
+                    )}
                     <button
-                        onClick={handleCashierSignIn}
-                        style={{
-                            flex: 1,
-                            padding: "1.5rem",
-                            border: "none",
-                            backgroundColor: "#008b24",
-                            color: "white",
-                            fontSize: "1.2rem",
-                            cursor: "pointer",
-                        }}
-                    >
-                        Cashier Sign In
-                    </button>
-
-                    <button
-                        onClick={onClose}
+                        onClick={onCancel}
                         style={{
                             flex: 1,
                             padding: "1.5rem",

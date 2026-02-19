@@ -52,7 +52,7 @@ export const text: Record<Language, UIText> = {
         // Order
         back: "Back",
         cancelItems: "Cancel Item",
-        cancellingItem: "Press Item to Cancel",
+        cancellingItem: "Press Item to Cancel\n",
         payNow: "Pay Now",
         subtotal: "Subtotal",
         produceNoBarcode: "Produce /\nNo Barcode",

@@ -1,8 +1,6 @@
 import type {Route} from "./+types/cashierSignIn"
-import {QwertyKeyboard} from "~/components/Keyboard";
-import {useNavigate} from "react-router";
+import {useNavigate, useLocation} from "react-router";
 import {useState} from "react";
-import {Numpad} from "~/components/Numpad";
 import {FullKeyboard} from "~/components/FullKeyboard";
 import {useRole} from "~/state/RoleContext";
 
@@ -14,6 +12,8 @@ export function meta({}: Route.MetaArgs){
 
 export default function CashierSignIn() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const returnTo = location.state?.from ?? "/";
     const {setRole} = useRole();
 
     const [username, setUsername] = useState("");
@@ -30,9 +30,8 @@ export default function CashierSignIn() {
     const attemptLogin = () => {
         if (username === TEST_USER.username &&
             password === TEST_USER.password){
-                // TODO: set to cashier mode
                 setRole("cashier")
-                navigate("/");
+                navigate(returnTo);
        } else {
             setError("Invalid login!")
         }
