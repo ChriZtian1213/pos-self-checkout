@@ -57,10 +57,10 @@ router.get("/me", (req, res) => {
  */
 router.post("/logout", (req, res) => {
     const sessionId = req.cookies.sessionId;
-
-    deleteSession(sessionId);
-    res.clearCookie("sessionId");
-
+    if (sessionId){
+        deleteSession(sessionId);
+        res.clearCookie("sessionId");
+    }
     res.json({ success: true });
 });
 

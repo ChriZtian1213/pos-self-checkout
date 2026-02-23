@@ -1,21 +1,16 @@
-import crypto from "crypto";
+import { getSession } from "../sessions.js";
 
-const sessions = {};
+export function requireRole(...allowedRoles) {
+    return (req, res, next) => {
+        const sessionId = req.cookies.sessionId;
+        const session = getSession(sessionId);
 
-export function createSession(role) {
-    const sessionId = crypto.randomUUID();
+        if (!session || !allowedRoles.includes(session.role)) {
+            res.status(403).json({ error: "Forbidden" });
+            return;
+        }
 
-    sessions[sessionId] = {
-        role
+        req.session = session;
+        next();
     };
-
-    return sessionId;
-}
-
-export function getSession(sessionId) {
-    return sessions[sessionId];
-}
-
-export function deleteSession(sessionId) {
-    delete sessions[sessionId];
 }

@@ -14,28 +14,15 @@ export default function CashierSignIn() {
     const navigate = useNavigate();
     const location = useLocation();
     const returnTo = location.state?.from ?? "/";
-    const {isCustomer, setRole} = useRole();
+    const {setRole} = useRole();
+
     const backgroundColor = "yellow";
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [activeField, setActiveField] =
         useState<"username" | "password">("username");
     const [error, setError] = useState<string | null>(null);
-
-    const TEST_USER = {
-        username: "123",
-        password: "000"
-    }
-
-    const attemptLogin = () => {
-        if (username === TEST_USER.username &&
-            password === TEST_USER.password){
-                setRole("cashier")
-                navigate(returnTo);
-       } else {
-            setError("Invalid login!")
-        }
-    }
 
     const handleLoginKeyPress = (key: string) => {
         if (key === "enter") {
@@ -58,6 +45,34 @@ export default function CashierSignIn() {
         if (key === "clear" || key === "CLEAR") return "";
         if (key === "space") return value + " ";
         return value + key;
+    };
+
+    const attemptLogin = async () => {
+        setError(null);
+        try {
+            const res = await fetch("http://localhost:3001/login", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                credentials: "include",
+                body: JSON.stringify({username, password})
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                setError(data.error || "Login failed.");
+                return;
+            }
+
+            const meRes = await fetch("http://localhost:3001/me", {
+                credentials: "include",
+            });
+            const meData = await meRes.json();
+            setRole(meData.role);
+            navigate(returnTo);
+        } catch (err) {
+            console.log(err);
+            setError("Network error")
+        }
     };
 
     return (

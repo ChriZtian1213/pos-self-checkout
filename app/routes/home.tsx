@@ -44,10 +44,19 @@ export default function Home() {
         navigate("/order");
     };
 
-    const handleExitCashierMode = () => {
-
-        setRole("customer");
-    }
+    const handleExitCashierMode = async () => {
+        try {
+            // call backend logout
+            await fetch("http://localhost:3001/logout", {
+                method: "POST",
+                credentials: "include" // sends cookie
+            });
+            setRole("customer");
+        } catch (err) {
+            console.error("Logout failed", err);
+            showPopup({ message: "Failed to exit cashier mode" });
+        }
+    };
 
 
     return (
