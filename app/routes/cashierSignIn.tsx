@@ -14,8 +14,8 @@ export default function CashierSignIn() {
     const navigate = useNavigate();
     const location = useLocation();
     const returnTo = location.state?.from ?? "/";
-    const {setRole} = useRole();
-
+    const {isCustomer, setRole} = useRole();
+    const backgroundColor = "yellow";
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [activeField, setActiveField] =
@@ -66,7 +66,7 @@ export default function CashierSignIn() {
                 height: "100vh",
                 display: "flex",
                 flexDirection: "column",
-                backgroundColor: "#f2f2f2",
+                backgroundColor: backgroundColor,
             }}
         >
             {/* Center content */}
@@ -126,7 +126,7 @@ export default function CashierSignIn() {
                     flexDirection: "row",
                     justifyContent: "center",
                     gap: "1rem",
-                    backgroundColor: "#ddd",
+                    backgroundColor: "#3e414e",
                     maxHeight: "50vh",
                     alignItems: "center",
                     paddingBottom: "1rem",
@@ -145,7 +145,7 @@ export default function CashierSignIn() {
                 }}
             >
                 <button
-                    style={{ flex: 1 }}
+                    style={{ flex: 1, backgroundColor: "#535768", color: "white", borderRight: "1px solid black", cursor: "pointer" }}
                     onClick={() => navigate(-1)}
                 >
                     Back
@@ -154,17 +154,17 @@ export default function CashierSignIn() {
                 <button
                     style={{
                         flex: 2,
-                        backgroundColor: "#008b24",
                         color: "white",
                         fontSize: "1.2rem",
                         border: "none",
+                        backgroundColor: "#535768"
                     }}
                     onClick={() => {
                         // TODO: validate login
                         console.log(username, password);
                     }}
                 >
-                    Sign In
+
                 </button>
             </div>
         </div>

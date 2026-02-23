@@ -3,9 +3,10 @@ import {text} from "~/i18n/text";
 import {bakery} from "~/data/bakery";
 import {misc} from "~/data/misc";
 import {useOrder} from "~/state/OrderContext";
-import Popup from "~/components/Popup";
 import {useNavigate} from "react-router";
 import {useState} from "react";
+import {useRole} from "~/state/RoleContext";
+import {usePopup} from "~/state/PopupContext";
 
 export function meta() {
     return [
@@ -15,6 +16,9 @@ export function meta() {
 
 export default function Pay(){
     const {language} = useLanguage();
+    const {isCustomer, setRole} = useRole();
+    const {showPopup} = usePopup();
+    const backgroundColor =  isCustomer ? "#f2f2f2" : "yellow";
     const navigate = useNavigate();
     const {total, subtotal, tax, snapSubtotal} = useOrder();
     const [paymentMethod, setPaymentMethod] = useState<"cash" | "card" | null>(null );
@@ -24,6 +28,21 @@ export default function Pay(){
         paymentMethod === "cash" ? "/payImages/paymentCash.jpg" :
             paymentMethod === "card" ? "/payImages/paymentCard.jpg" :
                 "/payImages/paymentDefault.jpg"
+
+    const handleExitCashierMode = () => {
+        setRole("customer");
+    }
+
+    const handleCallCashier = () => {
+        showPopup({
+            message: text[language].cashierMessage,
+            onConfirm: () => {
+                navigate("/cashierSignIn", {
+                    state: { from: "/pay" }
+                });
+            }
+        });
+    }
 
     const handleGoBack = () => {
         navigate("/order");
@@ -53,7 +72,7 @@ export default function Pay(){
                     style={{
                         flex: 1,
                         padding: "1rem",
-                        backgroundColor: "#f2f2f2",
+                        backgroundColor: backgroundColor,
                         display: "flex",
                         flexDirection: "column",
                     }}
@@ -139,7 +158,7 @@ export default function Pay(){
                     style={{
                         flex: 1,
                         padding: "1rem",
-                        backgroundColor: "#f2f2f2",
+                        backgroundColor: backgroundColor,
                         display: "flex",
                         flexDirection: "column",
                     }}
@@ -258,17 +277,21 @@ export default function Pay(){
                     }}
                 />
 
-                <button
-                    style={{
-                        flex: 1,
-                        border: "none",
-                        cursor: "pointer",
-                        backgroundColor: "#535668",
-                        color: "white",
-                    }}
-                >
-                    {text[language].callCashier}
-                </button>
+                {
+                    isCustomer && (<button
+                        style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: "#535668", color: "white", borderRight: "1px transparent" }}
+                        onClick={handleCallCashier}
+                    >
+                        {text[language].callCashier}
+                    </button>) ||
+
+                    !isCustomer && (<button
+                        style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: isCustomer ? "#535668" : "#0071ff", color: "white", borderRight: "1px transparent" }}
+                        onClick={handleExitCashierMode}
+                    >
+                        Exit Cashier Mode
+                    </button>)
+                }
 
                 <div
                     style={{

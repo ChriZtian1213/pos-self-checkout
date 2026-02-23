@@ -91,8 +91,6 @@ export const FullKeyboard: React.FC<FullKeyboardProps> = ({value, mask=false, on
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    backgroundColor:
-                                        key === "CAPS LOCK" ? capsLock ? "#949292" : "white" : "white",
                                 }}
                             >
                                 {key === "SPACE" ? "" : displayKey}
@@ -112,7 +110,9 @@ export const FullKeyboard: React.FC<FullKeyboardProps> = ({value, mask=false, on
                         {row.numbers.map((key) => (
                             <button
                                 key={key}
-                                style={{ padding: "1rem", fontSize: "1.2rem", backgroundColor: "white" }}
+                                style={{ padding: "1rem", fontSize: "1.2rem", cursor: "pointer",
+                                    backgroundColor:
+                                        key === "enter" ? "#008b24" : "white",}}
                                 onClick={() => handleClick(key)}
                             >
                                 {key}

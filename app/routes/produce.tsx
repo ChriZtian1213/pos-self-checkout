@@ -18,10 +18,9 @@ export function meta(){
 
 export default function ProduceNoBarcode(){
     const {language} = useLanguage();
+    const buttonColor = "#535668";
     const navigate = useNavigate();
-
     const manageOrder = useOrder();
-
     const [isPlu, setIsPlu] = useState(true);
     const [currentInput, setCurrentInput] = useState("");
     const [selectedProduce, setSelectedProduce] = useState<CatalogItem | null>(null);
@@ -108,7 +107,7 @@ export default function ProduceNoBarcode(){
 
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+        <div style={{ display: "flex", flexDirection: "column", height: "100vh", backgroundColor: "#f2f2f2" }}>
             {/* Main content */}
             <div style={{ display: "flex", flex: 1, padding: "1rem", flexDirection: "row" }}>
                 {/* Left column: grid + pagination */}
@@ -148,7 +147,7 @@ export default function ProduceNoBarcode(){
                 height: "80px",
             }}>
                 <button
-                    style={{flex: 1}}
+                    style={{flex: 1, backgroundColor: buttonColor, color: "white", cursor: "pointer", borderRight: "1px solid black"}}
                     onClick={() => navigate("/order")}
                 >
                     {text[language].back}</button>
@@ -158,12 +157,13 @@ export default function ProduceNoBarcode(){
                         setCurrentInput("");
                     }}
                     style={{
-                        flex: 1
+                        flex: 1,
+                        backgroundColor: buttonColor, color: "white", cursor: "pointer", borderRight: "1px solid black"
                     }}
                     disabled={!!selectedProduce}
                 >
                     {isPlu ? text[language].nameSearch : text[language].pluSearch}</button>
-                <div style={{flex: 1, textAlign: "center", alignItems: "center"}}>0.00 lbs</div>
+                <div style={{flex: 1, display: "flex", color: "white", justifyContent: "center", alignItems: "center", backgroundColor: buttonColor}}>0.00 lbs</div>
             </div>
         </div>
     );

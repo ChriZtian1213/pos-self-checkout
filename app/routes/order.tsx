@@ -56,6 +56,7 @@ export default function Order() {
     const handleProduceNoBarcode = () => {
         navigate("/produce");
     }
+
     const handleCallCashier = () => {
         showPopup({
             message: text[language].cashierMessage,
