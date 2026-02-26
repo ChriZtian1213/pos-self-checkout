@@ -179,7 +179,7 @@ export default function Order() {
                             borderRadius: "8px",
                             margin: "1rem",
                             maxHeight:
-                                activeCategory === "saltIce" ? "30vh" : "60vh",
+                                activeCategory === "saltIce" || activeCategory == "bakery" ? "30vh" : "60vh",
                         }}
                     >
                         <img
@@ -221,7 +221,6 @@ export default function Order() {
                                     gridTemplateRows: "repeat(3, 1fr)",
                                     gap: "0.5rem",
                                     width: "40vh",
-                                    height: "30vh",
                                     margin: "0 auto",
                                 }}
                             >
@@ -290,7 +289,7 @@ export default function Order() {
                 }}
             >
                 <button
-                    style={{flex: 1, border: "none", cursor: isOrderStarted ? "" : "pointer", backgroundColor: isOrderStarted ? "#9294A1" : "#535668", color: "white", borderRight: "1px solid black" }}
+                    style={{flex: 1, border: "none", cursor: !isBackEnabled ? "" : "pointer", backgroundColor: !isBackEnabled ? "#9294A1" : "#535668", color: "white", borderRight: "1px solid black" }}
                     onClick={handleGoBack}
                     disabled={!isBackEnabled}
                 >
