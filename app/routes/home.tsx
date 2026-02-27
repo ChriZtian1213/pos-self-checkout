@@ -7,6 +7,7 @@ import {useLanguage} from "~/state/LanguageContext";
 import {useRole} from "~/state/RoleContext";
 import {usePopup} from "~/state/PopupContext";
 
+
 export function meta({}: Route.MetaArgs) {
     return [
         { title: "Welcome to POS Self-Checkout" },
@@ -19,7 +20,7 @@ export default function Home() {
     const navigate = useNavigate();
     const location = useLocation();
     const {showPopup} = usePopup();
-    const {isCustomer, setRole} = useRole();
+    const {isCustomer, logout} = useRole();
     const backgroundColor =  isCustomer ? "#2ba54b" : "yellow";
     const textColor = isCustomer ? "white" : "black";
 
@@ -42,20 +43,6 @@ export default function Home() {
 
     const handleStart = () => {
         navigate("/order");
-    };
-
-    const handleExitCashierMode = async () => {
-        try {
-            // call backend logout
-            await fetch("http://localhost:3001/logout", {
-                method: "POST",
-                credentials: "include" // sends cookie
-            });
-            setRole("customer");
-        } catch (err) {
-            console.error("Logout failed", err);
-            showPopup({ message: "Failed to exit cashier mode" });
-        }
     };
 
 
@@ -140,7 +127,7 @@ export default function Home() {
                             backgroundColor: isCustomer ? "#535668" : "#0071ff",
                             color: "white",
                         }}
-                        onClick={handleExitCashierMode}
+                        onClick={logout}
                     >
                         Exit Cashier Mode
                     </button>)

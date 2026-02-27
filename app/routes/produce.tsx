@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useMemo, useState} from "react";
 import {produce} from "~/data/produce";
 import {useNavigate} from "react-router";
 import {ProduceGrid} from "~/components/ProduceGrid";
@@ -26,6 +26,12 @@ export default function ProduceNoBarcode(){
     const [selectedProduce, setSelectedProduce] = useState<CatalogItem | null>(null);
     const [quantityInput, setQuantityInput] = useState("");
 
+    const MAX_QUANTITY_INPUT = 10;
+    const qtyNumber = Number(quantityInput);
+    const isQuantityValid =
+        Number.isInteger(qtyNumber) &&
+        qtyNumber > 0 && qtyNumber <= MAX_QUANTITY_INPUT;
+
     const produceArray = Object.values(produce);
 
     const findProduceByPlu = (plu: string) => {
@@ -51,6 +57,7 @@ export default function ProduceNoBarcode(){
     const handleKeyPress = (key: string) => {
         if (selectedProduce) {
             if (key === text[language].enter) {
+                if (!isQuantityValid) return;
                 setCurrentInput("");
                 handleConfirmQuantity();
                 return;
@@ -81,8 +88,6 @@ export default function ProduceNoBarcode(){
     }
 
     const handleConfirmQuantity = () => {
-        const qty = Number(quantityInput);
-        if (!Number.isInteger(qty) || qty <= 0) return;
         manageOrder.addItem(
             {
                 plu: selectedProduce!.plu,
@@ -92,7 +97,7 @@ export default function ProduceNoBarcode(){
                 image: selectedProduce!.image,
                 category: selectedProduce!.category,
             },
-            qty
+            qtyNumber
         );
         setSelectedProduce(null);
         setQuantityInput("");
@@ -112,6 +117,8 @@ export default function ProduceNoBarcode(){
             <div style={{ display: "flex", flex: 1, padding: "1rem", flexDirection: "row" }}>
                 {/* Left column: grid + pagination */}
                 <div style={{ flex: 2, display: "flex", flexDirection: "column" }}>
+                    <div>
+                    </div>
                     {selectedProduce? (
                         <ItemQuantityPopup item={selectedProduce} onConfirm={handleConfirmQuantity} onCancel={handleCancel} quantity={quantityInput} onQuantityChange={setQuantityInput} />
                         ) : (
@@ -134,9 +141,14 @@ export default function ProduceNoBarcode(){
 
                 {/* Right column: numpad */}
                 {isPlu ? (
-                    <Numpad value={currentInput}
-                            onKeyPress={handleKeyPress}
-                    />
+                        <div>
+                            <div style={{display: "flex", flexDirection: "column", marginLeft: "1rem", fontSize: 24, textAlign: "center", justifyContent: "center", backgroundColor: "blue", color: "white", height: "5rem", width: "20rem"}}>
+                                Please enter PLU code
+                            </div>
+                            <Numpad value={currentInput}
+                                    onKeyPress={handleKeyPress}
+                            />
+                        </div>
                 ): (<></>)}
 
             </div>
@@ -158,9 +170,9 @@ export default function ProduceNoBarcode(){
                     }}
                     style={{
                         flex: 1,
-                        backgroundColor: buttonColor, color: "white", cursor: "pointer", borderRight: "1px solid black"
+                        backgroundColor: !selectedProduce ? buttonColor : "#9294A1" , color: "white", cursor: !selectedProduce ?  "pointer" : "", borderRight: "1px solid black"
                     }}
-                    disabled={!!selectedProduce}
+                    disabled={selectedProduce !== null}
                 >
                     {isPlu ? text[language].nameSearch : text[language].pluSearch}</button>
                 <div style={{flex: 1, display: "flex", color: "white", justifyContent: "center", alignItems: "center", backgroundColor: buttonColor}}>0.00 lbs</div>

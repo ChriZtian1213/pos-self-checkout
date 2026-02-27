@@ -13,7 +13,7 @@ export const Numpad: React.FC<NumpadProps> = ({value, onKeyPress, mask = false})
     const keys = ["7","8","9","4","5","6","1","2","3","⌫","0", text[language].clear];
 
     return (
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.5rem", padding: "1rem" }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.2rem", padding: "1rem" }}>
             <div
                 style={{
                     height: "60px",
@@ -34,14 +34,14 @@ export const Numpad: React.FC<NumpadProps> = ({value, onKeyPress, mask = false})
                     display: "grid",
                     gridTemplateColumns: "repeat(3, 1fr)",
                     gridTemplateRows: "repeat(4, 1fr)",
-                    gap: "0.5rem",
+                    gap: "0.1rem",
                     flex: 1,
                 }}
             >
                 {keys.map(key => (
                     <button
                         key={key}
-                        style={{ fontSize: "1.5rem", cursor: "pointer", minHeight: "10vh",  }}
+                        style={{ fontSize: "1.5rem", cursor: "pointer", minHeight: "10vh", backgroundColor: "#535668", color: "white", border: "none"  }}
                         onClick={() => onKeyPress(key)}
                     >
                         {key}
@@ -55,7 +55,7 @@ export const Numpad: React.FC<NumpadProps> = ({value, onKeyPress, mask = false})
             >
                 <button
                     key="enter"
-                    style={{fontSize: "1.5rem", cursor: "pointer", minHeight: "8vh", minWidth: "30vh"}}
+                    style={{fontSize: "1.5rem", cursor: "pointer", minHeight: "8vh", minWidth: "36vh", backgroundColor: "green", color: "white", border: "none"}}
                     onClick={() => onKeyPress(text[language].enter)}
                 >
                     {text[language].enter}

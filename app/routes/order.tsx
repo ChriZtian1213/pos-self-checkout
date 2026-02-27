@@ -12,6 +12,7 @@ import {usePopup} from "~/state/PopupContext";
 import {useRole} from "~/state/RoleContext";
 
 
+
 export function meta() {
     return [
         { title: "Order" },
@@ -20,7 +21,7 @@ export function meta() {
 
 export default function Order() {
     const {language} = useLanguage();
-    const {isCustomer, setRole} = useRole();
+    const {isCustomer, logout} = useRole();
     const backgroundColor =  isCustomer ? "#f2f2f2" : "yellow";
     const {showPopup} = usePopup();
     const navigate = useNavigate();
@@ -41,11 +42,6 @@ export default function Order() {
         if (!isCustomer) {
             setCancelMode(prev => !prev);
         }
-    }
-
-    const handleExitCashierMode = () => {
-        setCancelMode(false);
-        setRole("customer");
     }
 
     const handleGoBack = () => {
@@ -312,7 +308,7 @@ export default function Order() {
 
                     !isCustomer && (<button
                         style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: isCustomer ? "#535668" : "#0071ff", color: "white", borderRight: "1px transparent" }}
-                        onClick={handleExitCashierMode}
+                        onClick={logout}
                     >
                     Exit Cashier Mode
                     </button>)

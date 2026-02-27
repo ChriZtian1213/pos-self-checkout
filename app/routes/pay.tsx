@@ -16,7 +16,7 @@ export function meta() {
 
 export default function Pay(){
     const {language} = useLanguage();
-    const {isCustomer, setRole} = useRole();
+    const {isCustomer, logout} = useRole();
     const {showPopup} = usePopup();
     const backgroundColor =  isCustomer ? "#f2f2f2" : "yellow";
     const navigate = useNavigate();
@@ -29,9 +29,7 @@ export default function Pay(){
             paymentMethod === "card" ? "/payImages/paymentCard.jpg" :
                 "/payImages/paymentDefault.jpg"
 
-    const handleExitCashierMode = () => {
-        setRole("customer");
-    }
+
 
     const handleCallCashier = () => {
         showPopup({
@@ -173,6 +171,7 @@ export default function Pay(){
                             color: "red",
                             fontSize: "1.5rem",
                             textAlign: "center",
+                            height: "3rem"
                         }}
                     >
                         {paymentMethod === null ? "Please scan your coupons before selecting payment type" : paymentMethod === "cash" ? "Please insert cash below" : paymentMethod === "card" ? "Please proceed payment on Kiosk" : ""}
@@ -287,7 +286,7 @@ export default function Pay(){
 
                     !isCustomer && (<button
                         style={{ flex: 1, border: "none", cursor: "pointer", backgroundColor: isCustomer ? "#535668" : "#0071ff", color: "white", borderRight: "1px transparent" }}
-                        onClick={handleExitCashierMode}
+                        onClick={logout}
                     >
                         Exit Cashier Mode
                     </button>)

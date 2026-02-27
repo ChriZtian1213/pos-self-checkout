@@ -7,6 +7,7 @@ const RoleContext = React.createContext<RoleContextValue | null>
 interface RoleContextValue {
     role: Role;
     setRole: (role: Role) => void;
+    logout: () => void;
     isCustomer: boolean;
     isCashier: boolean;
     isManager: boolean;
@@ -17,6 +18,17 @@ export const RoleProvider: React.FC<{children: React.ReactNode}> = ({children}) 
     const value: RoleContextValue = {
         role,
         setRole,
+        logout: async () => {
+            try {
+                await fetch("http://localhost:3001/logout", {
+                    method: "POST",
+                    credentials: "include"
+                });
+                setRole("customer");
+            } catch (err) {
+                console.error(err);
+            }
+        },
         isCustomer: role === "customer",
         isCashier: role === "cashier",
         isManager: role === "manager"
