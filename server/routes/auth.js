@@ -53,6 +53,13 @@ router.get("/me", (req, res) => {
 });
 
 /**
+ GET /
+ **/
+router.get("/", (req, res) => {
+   res.json({message: "Hi there!"});
+});
+
+/**
  * POST /logout
  */
 router.post("/logout", (req, res) => {

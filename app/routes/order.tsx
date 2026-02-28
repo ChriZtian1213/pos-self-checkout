@@ -1,8 +1,6 @@
 import {OrderItem} from "~/components/OrderItem";
-import {useLocation, useNavigate} from "react-router";
-import {useState} from "react";
-import {CustomerFunctions} from "~/services/CustomerFunctions";
-import Popup from "~/components/Popup";
+import {useNavigate} from "react-router";
+import {useEffect, useState} from "react";
 import {useLanguage} from "~/state/LanguageContext";
 import {useOrder} from "~/state/OrderContext";
 import {text} from "~/i18n/text";
@@ -10,7 +8,6 @@ import {bakery} from "~/data/bakery";
 import {misc} from "~/data/misc";
 import {usePopup} from "~/state/PopupContext";
 import {useRole} from "~/state/RoleContext";
-
 
 
 export function meta() {
@@ -21,18 +18,28 @@ export function meta() {
 
 export default function Order() {
     const {language} = useLanguage();
-    const {isCustomer, logout} = useRole();
+    const {isCustomer, isCashier, isManager, logout} = useRole();
     const backgroundColor =  isCustomer ? "#f2f2f2" : "yellow";
     const {showPopup} = usePopup();
     const navigate = useNavigate();
     const [cancelMode, setCancelMode] = useState(false);
     const [activeCategory, setActiveCategory] = useState<"none" | "produce" | "saltIce" | "bakery">("none");
+    const [bannerKey, setBannerKey] =
+        useState<keyof typeof text[typeof language]>("scanItem");
 
     const {items, decrementItem, subtotal} = useOrder();
     const mostRecentItem = items[items.length - 1];
 
     const isOrderStarted = items.length > 0;
     const isBackEnabled = !isOrderStarted || activeCategory !== "none";
+
+    useEffect(() => {
+        if (!isCustomer){
+            setBannerKey("optionSelectedBanner");
+        } else {
+            setBannerKey("scanItem");
+        }
+    }, [isCustomer]);
 
     const handleCancelItem = () => {
         if (isCustomer){
@@ -162,116 +169,148 @@ export default function Order() {
                             fontSize: "1.5rem"
                         }}
                     >
-                        {text[language].scanItem}
+                        {isCustomer ? text[language][bannerKey] :
+                            text[language][bannerKey]}
                     </div>
                     {/* Product Image */}
-                    <div
-                        style={{
-                            display: "flex",
-                            flex: 1,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            border: "1px solid #ccc",
-                            borderRadius: "8px",
-                            margin: "1rem",
-                            maxHeight:
-                                activeCategory === "saltIce" || activeCategory == "bakery" ? "30vh" : "60vh",
-                        }}
-                    >
-                        <img
-                            src={mostRecentItem?.image ? `/${mostRecentItem.category}Images/${mostRecentItem.image}` : "/pleaseScanItem.jpg"}
-                            alt="Product"
-                            style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
-                        />
-                    </div>
-                    <div style={{ display: "flex", gap: "0.5rem" }}>
-                        {activeCategory === "none" || activeCategory === "produce" ? (
-                            <>
-                                <button
-                                    style={{ flex: 1, padding: "1rem" }}
-                                    onClick={() => handleProduceNoBarcode()}
-                                >
-                                    {text[language].produceNoBarcode}
-                                </button>
-                                <button
-                                    style={{ flex: 1, padding: "1rem" }}
-                                    onClick={() => setActiveCategory("saltIce")}
-                                >
-                                    {text[language].saltIce}
-                                </button>
-                                <button
-                                    style={{ flex: 1, padding: "1rem" }}
-                                    onClick={() => setActiveCategory("bakery")}
-                                >
-                                    {text[language].bakery}
-                                </button>
-                            </>
-                        ) : null}
-
-                        {activeCategory === "bakery" && (
+                    {isCustomer ? (
+                        <>
                             <div
                                 style={{
+                                    display: "flex",
                                     flex: 1,
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    border: "1px solid #ccc",
+                                    borderRadius: "8px",
+                                    margin: "1rem",
+                                    maxHeight:
+                                        activeCategory === "saltIce" || activeCategory == "bakery" || !isCustomer ? "30vh" : "60vh",
+                                }}
+                            >
+                                <img
+                                    src={mostRecentItem?.image ? `/${mostRecentItem.category}Images/${mostRecentItem.image}` : "/pleaseScanItem.jpg"}
+                                    alt="Product"
+                                    style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                                />
+                            </div>
+                            <div style={{ display: "flex", gap: "0.5rem" }}>
+                                {activeCategory === "none" || activeCategory === "produce" ? (
+                                    <>
+                                        <button
+                                            style={{ flex: 1, padding: "1rem" }}
+                                            onClick={() => handleProduceNoBarcode()}
+                                        >
+                                            {text[language].produceNoBarcode}
+                                        </button>
+                                        <button
+                                            style={{ flex: 1, padding: "1rem" }}
+                                            onClick={() => {
+                                                setActiveCategory("saltIce");
+                                                setBannerKey("optionSelectedBanner");
+                                            }
+                                        }
+                                        >
+                                            {text[language].saltIce}
+                                        </button>
+                                        <button
+                                            style={{ flex: 1, padding: "1rem" }}
+                                            onClick={() => setActiveCategory("bakery")}
+                                        >
+                                            {text[language].bakery}
+                                        </button>
+                                    </>
+                                ) : null}
+
+                                {activeCategory === "bakery" && (
+                                    <div
+                                        style={{
+                                            flex: 1,
+                                            display: "grid",
+                                            gridTemplateColumns: "repeat(3, 1fr)",
+                                            gridTemplateRows: "repeat(3, 1fr)",
+                                            gap: "0.5rem",
+                                            width: "40vh",
+                                            margin: "0 auto",
+                                        }}
+                                    >
+                                        <button
+                                            style={{ flex: 1, padding: "1rem" }}
+                                            onClick={() =>
+                                                navigate("/addItem", {state: {item : bakery.donut}})}
+                                        >
+                                            {text[language].donut}</button>
+                                        <button
+                                            style={{ flex: 1, padding: "1rem" }}
+                                            onClick={() =>
+                                                navigate("/addItem", {state: {item : bakery.mexicanPastry}})}
+                                        >
+                                            {text[language].mexicanPastry}</button>
+                                        <button
+                                            style={{ flex: 1, padding: "1rem", height: "10vh" }}
+                                            onClick={() =>
+                                                navigate("/addItem", {state: {item : bakery.bolillo}})}
+                                        >
+                                            {text[language].bolillos}</button>
+                                    </div>
+                                )}
+
+                                {activeCategory === "saltIce" && (
+                                    <div
+                                        style={{
+                                            flex: 1,
+                                            display: "grid",
+                                            gridTemplateColumns: "repeat(3, 1fr)",
+                                            gridTemplateRows: "repeat(3, 1fr)",
+                                            gap: "0.5rem",
+                                            width: "40vh",
+                                            height: "30vh",
+                                            margin: "0 auto",
+                                        }}
+                                    >
+                                        <button style={{ flex: 1, padding: "1rem" }}
+                                                onClick={() =>
+                                                    navigate("/addItem", {state: {item : misc.ice}})}
+                                        >
+                                            {text[language].ice}</button>
+                                        <button style={{ flex: 1, padding: "1rem" }}
+                                                onClick={() =>
+                                                    navigate("/addItem", {state: {item : misc.propaneExchange}})}
+                                        >
+                                            {text[language].propaneExchange}</button>
+                                        <button style={{ flex: 1, padding: "1rem" }}
+                                                onClick={() =>
+                                                    navigate("/addItem", {state: {item : misc.propanePurchase}})}
+                                        >
+                                            {text[language].propanePurchase}</button>
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    ) : (
+                        <>
+
+                            <div
+                                style={{
+                                    paddingTop: "3rem",
                                     display: "grid",
                                     gridTemplateColumns: "repeat(3, 1fr)",
                                     gridTemplateRows: "repeat(3, 1fr)",
-                                    gap: "0.5rem",
-                                    width: "40vh",
-                                    margin: "0 auto",
-                                }}
-                            >
-                                <button
-                                    style={{ flex: 1, padding: "1rem" }}
-                                    onClick={() =>
-                                        navigate("/addItem", {state: {item : bakery.donut}})}
-                                >
-                                    {text[language].donut}</button>
-                                <button
-                                    style={{ flex: 1, padding: "1rem" }}
-                                    onClick={() =>
-                                        navigate("/addItem", {state: {item : bakery.mexicanPastry}})}   
-                                >
-                                    {text[language].mexicanPastry}</button>
-                                <button
-                                    style={{ flex: 1, padding: "1rem", height: "10vh" }}
-                                    onClick={() =>
-                                        navigate("/addItem", {state: {item : bakery.bolillo}})}
-                                >
-                                    {text[language].bolillos}</button>
-                            </div>
-                        )}
-
-                        {activeCategory === "saltIce" && (
-                            <div
-                                style={{
                                     flex: 1,
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(3, 1fr)",
-                                    gridTemplateRows: "repeat(3, 1fr)",
-                                    gap: "0.5rem",
-                                    width: "40vh",
-                                    height: "30vh",
-                                    margin: "0 auto",
-                                }}
-                            >
-                                <button style={{ flex: 1, padding: "1rem" }}
-                                        onClick={() =>
-                                            navigate("/addItem", {state: {item : misc.ice}})}
-                                >
-                                    {text[language].ice}</button>
-                                <button style={{ flex: 1, padding: "1rem" }}
-                                        onClick={() =>
-                                            navigate("/addItem", {state: {item : misc.propaneExchange}})}
-                                >
-                                    {text[language].propaneExchange}</button>
-                                <button style={{ flex: 1, padding: "1rem" }}
-                                        onClick={() =>
-                                            navigate("/addItem", {state: {item : misc.propanePurchase}})}
-                                >
-                                    {text[language].propanePurchase}</button>
+                            }}>
+                                <button>Department</button>
+                                <button>Price Change</button>
+                                <button>Settings</button>
+                                <button>Recall</button>
+                                <button>Void Mode</button>
+                                <button>Total</button>
+                                <button>Quantity</button>
+                                <button style={{pointerEvents: "none"}}></button>
+                                <button style={{pointerEvents: "none"}}></button>
                             </div>
-                        )}
-                    </div>
+                        </>
+                    )}
+
                 </div>
             </div>
 

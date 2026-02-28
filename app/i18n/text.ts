@@ -28,6 +28,8 @@ type UIText = {
     bolillos: string;
     propaneExchange: string;
     propanePurchase: string;
+    optionSelectedBanner: string;
+    cashierModeBanner: string;
 
     // Produce
     nameSearch: string;
@@ -67,6 +69,9 @@ export const text: Record<Language, UIText> = {
         bolillos: "Bolillos",
         propaneExchange: "Propane Exchange",
         propanePurchase: "Propane Purchase (New)",
+        optionSelectedBanner: "Please select option",
+        cashierModeBanner: "Select option",
+
 
         // Produce
         nameSearch: "Name Search",
@@ -74,7 +79,6 @@ export const text: Record<Language, UIText> = {
         next: "Next",
         clear: "Clear",
         enter: "Enter",
-
     },
     es: {
         welcomeMain: "Escanea el primer artículo",
@@ -103,6 +107,8 @@ export const text: Record<Language, UIText> = {
         bolillos: "Bolillos",
         propaneExchange: "Cambio de Propano",
         propanePurchase: "Compra de Propano (Nuevo)",
+        optionSelectedBanner: "Por favor seleccione la opción",
+        cashierModeBanner: "Seleccionar opción",
 
         nameSearch: "Buscar con nombre",
         pluSearch: "Buscar con PLU",
